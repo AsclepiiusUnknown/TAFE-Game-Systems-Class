@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Item
 {
@@ -13,6 +11,9 @@ public class Item
     private Texture2D _icon;
     private GameObject _mesh;
     private ItemType _type;
+    private int _damage;
+    private int _armour;
+    private int _heal;
     #endregion
 
     #region Public Properties
@@ -55,6 +56,21 @@ public class Item
     {
         get { return _type; }
         set { _type = value; }
+    }
+    public int Damage
+    {
+        get { return _damage; }
+        set { _damage = value; }
+    }
+    public int Heal
+    {
+        get { return _heal; }
+        set { _heal = value; }
+    }
+    public int Armour
+    {
+        get { return _armour; }
+        set { _armour = value; }
     }
     #endregion
 }

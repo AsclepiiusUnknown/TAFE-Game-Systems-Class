@@ -22,7 +22,7 @@ public class PlayerHandler : Character
     public AudioSource playersAudio;
     public Transform currentCheckPoint;
     //                                   R G B A
-    public Color flashColour = new Color(1,0,0,0.2f);
+    public Color flashColour = new Color(1, 0, 0, 0.2f);
     public float flashSpeed = 5f;
     public static bool isDead;
     public bool isDamaged;
@@ -36,9 +36,9 @@ public class PlayerHandler : Character
     }
     public override void Movement()
     {
-        if(!isDead)
+        if (!isDead)
         {
-           // base.Movement();
+            // base.Movement();
             if (controller.isGrounded)
             {
                 moveDirection = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
@@ -50,7 +50,7 @@ public class PlayerHandler : Character
             }
             moveDirection.y -= gravity * Time.deltaTime;
             controller.Move(moveDirection * Time.deltaTime);
-        }       
+        }
     }
     public override void Update()
     {
@@ -59,33 +59,33 @@ public class PlayerHandler : Character
 
         for (int i = 0; i < attributes.Length; i++)
         {
-            attributes[i].displayImage.fillAmount = Mathf.Clamp01(attributes[i].currentValue/ attributes[i].maxValue);
+            attributes[i].displayImage.fillAmount = Mathf.Clamp01(attributes[i].currentValue / attributes[i].maxValue);
         }
         #endregion
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.X))
         {
             DamagePlayer(5);
         }
-        #endif
+#endif
         #region Damage Flash
         if (isDamaged && !isDead)
         {
             damageImage.color = flashColour;
             isDamaged = false;
         }
-        else if(damageImage.color.a > 0)
+        else if (damageImage.color.a > 0)
         {
             damageImage.color = Color.Lerp(damageImage.color, Color.clear, flashSpeed * Time.deltaTime);
         }
         #endregion
-        if(!canHeal)
+        if (!canHeal)
         {
             healDelayTimer += Time.deltaTime;
-            if(healDelayTimer >= 5)
+            if (healDelayTimer >= 5)
             {
                 canHeal = true;
-            }           
+            }
         }
         if (canHeal && attributes[0].currentValue < attributes[0].maxValue && attributes[0].currentValue > 0)
         {
@@ -101,14 +101,14 @@ public class PlayerHandler : Character
         //delay regen healing
         canHeal = false;
         healDelayTimer = 0;
-        if(attributes[0].currentValue <= 0 && !isDead)
+        if (attributes[0].currentValue <= 0 && !isDead)
         {
             Death();
         }
     }
     public void HealOverTime()
     {
-        attributes[0].currentValue += Time.deltaTime *(attributes[0].regenValue /*plus our constitution value??...Maybe another value*/);
+        attributes[0].currentValue += Time.deltaTime * (attributes[0].regenValue /*plus our constitution value??...Maybe another value*/);
     }
     public void OnTriggerEnter(Collider other)
     {
@@ -137,7 +137,7 @@ public class PlayerHandler : Character
     #endregion
 
     #region Death and Respawn
-  
+
     void Death()
     {
         //Set the death flag to dead
