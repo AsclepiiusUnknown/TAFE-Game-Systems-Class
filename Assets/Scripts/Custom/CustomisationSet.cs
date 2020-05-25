@@ -75,15 +75,15 @@ public class CustomisationSet : MonoBehaviour
             Texture2D tempTexture = Resources.Load("Character/Hair_" + i) as Texture2D;
             hair.Add(tempTexture);
         }
-        for (int i = 0; i < armourMax; i++)
-        {
-            Texture2D tempTexture = Resources.Load("Character/Armour_" + i) as Texture2D;
-            armour.Add(tempTexture);
-        }
         for (int i = 0; i < clothesMax; i++)
         {
             Texture2D tempTexture = Resources.Load("Character/Clothes_" + i) as Texture2D;
             clothes.Add(tempTexture);
+        }
+        for (int i = 0; i < armourMax; i++)
+        {
+            Texture2D tempTexture = Resources.Load("Character/Armour_" + i) as Texture2D;
+            armour.Add(tempTexture);
         }
 
         /*skinIndex = 4;

@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 8187285308828326040}
   - component: {fileID: 8187285308828326041}
   - component: {fileID: 8187285308828326042}
+  - component: {fileID: 6103309162348594955}
   m_Layer: 0
-  m_Name: CustomTester
+  m_Name: Customisation Handler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -105,7 +106,7 @@ MonoBehaviour:
   - Ranger
   - Sorcerer
   - Warlock
-  selectedClassIndex: 1
+  selectedClassIndex: 0
   characterStats:
   - baseStatsName: Strength
     baseStats: 0
@@ -129,50 +130,12 @@ MonoBehaviour:
   scrollPos: {x: 4, y: 4}
   classButton: 'Class:'
   statPoints: 10
-  skin:
-  - {fileID: 2800000, guid: aa6ca1e70158fd64695747f55cf71aff, type: 3}
-  - {fileID: 2800000, guid: 52439faba6137604b8aadc6132459b00, type: 3}
-  - {fileID: 2800000, guid: b1a6612097383bd4f8d7c7e29047cc66, type: 3}
-  - {fileID: 2800000, guid: 9edc7e7b7c45954488802302ddd1e651, type: 3}
-  eyes:
-  - {fileID: 2800000, guid: 0ea59006fc402a840861b5e6f84b6c18, type: 3}
-  - {fileID: 2800000, guid: 53be0fa1eb6a4494b833bfe3971a06ef, type: 3}
-  - {fileID: 2800000, guid: b0dd09fd5f01f184d9beb8baa1b7f866, type: 3}
-  - {fileID: 2800000, guid: acb95ebee3f36ef40a43de661ff37c8a, type: 3}
-  hair:
-  - {fileID: 2800000, guid: 0500020ca8d1be54fb67396f7746de2e, type: 3}
-  - {fileID: 2800000, guid: 0d157bd7b9910634497a4bdca3323f0f, type: 3}
-  - {fileID: 2800000, guid: 269eb41473c7b854dbbf85596c41d008, type: 3}
-  - {fileID: 2800000, guid: 76b12ffb66855f64cbd18bd6484da9f3, type: 3}
-  - {fileID: 2800000, guid: e1d2a6caad0df4745a2d1248d6ba1c6c, type: 3}
-  mouth:
-  - {fileID: 2800000, guid: a7ac829843aa5e440ba4ed9ee8d68d4d, type: 3}
-  - {fileID: 2800000, guid: 2f75c55ee8e6cde4eb490bf7898bcb5b, type: 3}
-  - {fileID: 2800000, guid: 15d11629a06f3834195ce84b775a7cab, type: 3}
-  armour:
-  - {fileID: 2800000, guid: 1839100dc887f2b4b8a5ea1af7a058e9, type: 3}
-  - {fileID: 2800000, guid: e887953f60711aa41b7458b19e2e94ee, type: 3}
-  - {fileID: 2800000, guid: 2a126bb1d80a90c4f9405d95b1538474, type: 3}
-  - {fileID: 2800000, guid: 67ba033f8dd3550458d9bf8b9f4b481a, type: 3}
-  - {fileID: 2800000, guid: 3a76b423e21755e488b30cc618cf9139, type: 3}
-  - {fileID: 2800000, guid: 3d5e05e844cf31248b6c3cbcc8325b34, type: 3}
-  - {fileID: 2800000, guid: b887d1bc4d791e64d94fdcd1cdf5eb16, type: 3}
-  - {fileID: 2800000, guid: bc7b68edd2ed6aa44a2e32c964e70cd0, type: 3}
-  - {fileID: 2800000, guid: 9cdc3e6f044eb6b48abdfcf66321def0, type: 3}
-  - {fileID: 2800000, guid: a4250862053e2444cab11e6c52577b6d, type: 3}
-  - {fileID: 2800000, guid: 65c23cefdc4833e4ab5f2e0135cd09c6, type: 3}
-  clothes:
-  - {fileID: 2800000, guid: ad7ef88d8eafcfa4cb372428ab0931cd, type: 3}
-  - {fileID: 2800000, guid: e73f142690722c8409c535e501c79b8d, type: 3}
-  - {fileID: 2800000, guid: c71a64cf51c41c3499377ddfc6e483e4, type: 3}
-  - {fileID: 2800000, guid: d52d7252a8c580942a61e4221f4556f8, type: 3}
-  - {fileID: 2800000, guid: a643cb8cf08c3ad43ac62c37687685d5, type: 3}
-  - {fileID: 2800000, guid: eadab44716657714783a470bcacea72e, type: 3}
-  - {fileID: 2800000, guid: 82eb8f2b23c6d034d8f5eec3f732b66a, type: 3}
-  - {fileID: 2800000, guid: d37ef3414ca334a439173afcb08fd45c, type: 3}
-  - {fileID: 2800000, guid: 8c49bbd80772fb04391dea14ef3f5134, type: 3}
-  - {fileID: 2800000, guid: 2a009826ffdb26c4f92d0aecff374ddb, type: 3}
-  - {fileID: 2800000, guid: 67dc0b29e5e757546acad44fbf42812a, type: 3}
+  skin: []
+  eyes: []
+  hair: []
+  mouth: []
+  armour: []
+  clothes: []
   skinIndex: 1
   eyesIndex: 1
   mouthIndex: 1
@@ -193,3 +156,17 @@ MonoBehaviour:
   - Hair
   - Armour
   - Clothes
+--- !u!114 &6103309162348594955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8187285308828326043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7780faf12a19cdd43bfa6ab279f891c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterRenderer: {fileID: 0}
+  player: {fileID: 0}

@@ -367,8 +367,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: Warrior
       objectReference: {fileID: 0}
+    - target: {fileID: 7471571691913091656, guid: b322a2ea8582eab4e8fc80afec85535d,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b322a2ea8582eab4e8fc80afec85535d, type: 3}
+--- !u!1 &1417685107 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7471571691913091656, guid: b322a2ea8582eab4e8fc80afec85535d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1417685106}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1462047933
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -376,6 +387,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6103309162348594955, guid: daebfa00d478fef4ca3530e3f02ef615,
+        type: 3}
+      propertyPath: characterRenderer
+      value: 
+      objectReference: {fileID: 1265907007}
+    - target: {fileID: 6103309162348594955, guid: daebfa00d478fef4ca3530e3f02ef615,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1417685107}
+    - target: {fileID: 6103309162348594955, guid: daebfa00d478fef4ca3530e3f02ef615,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8187285308828326040, guid: daebfa00d478fef4ca3530e3f02ef615,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -436,15 +462,10 @@ PrefabInstance:
       propertyPath: characterRenderer
       value: 
       objectReference: {fileID: 1265907007}
-    - target: {fileID: 8187285308828326042, guid: daebfa00d478fef4ca3530e3f02ef615,
-        type: 3}
-      propertyPath: selectedClassIndex
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8187285308828326043, guid: daebfa00d478fef4ca3530e3f02ef615,
         type: 3}
       propertyPath: m_Name
-      value: CustomTester
+      value: Customisation Handler
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: daebfa00d478fef4ca3530e3f02ef615, type: 3}
