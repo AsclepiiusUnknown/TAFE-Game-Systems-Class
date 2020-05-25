@@ -21,6 +21,7 @@ public class CustomisationGet : MonoBehaviour
         SetTexture("Mouth", PlayerPrefs.GetInt("Mouth Index"));
         SetTexture("Clothes", PlayerPrefs.GetInt("Clothes Index"));
         SetTexture("Armour", PlayerPrefs.GetInt("Armour Index"));
+        player.name = PlayerPrefs.GetString("Character Name");
     }
 
     void SetTexture(string type, int index)
