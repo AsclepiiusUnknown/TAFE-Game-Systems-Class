@@ -158,37 +158,37 @@ public class CustomisationSet : MonoBehaviour
         switch (type)
         {
             case "Skin":
-                index = skinIndex;
+                skinIndex = index;
                 max = skinMax;
                 textures = skin.ToArray();
                 matIndex = 1;
                 break;
             case "Eyes":
-                index = eyesIndex;
+                eyesIndex = index;
                 max = eyesMax;
                 textures = eyes.ToArray();
                 matIndex = 2;
                 break;
             case "Mouth":
-                index = mouthIndex;
+                mouthIndex = index;
                 max = mouthMax;
                 textures = mouth.ToArray();
                 matIndex = 3;
                 break;
             case "Hair":
-                index = hairIndex;
+                hairIndex = index;
                 max = hairMax;
                 textures = hair.ToArray();
                 matIndex = 4;
                 break;
             case "Armour":
-                index = armourIndex;
+                armourIndex = index;
                 max = armourMax;
                 textures = armour.ToArray();
                 matIndex = 5;
                 break;
             case "Clothes":
-                index = clothesIndex;
+                clothesIndex = index;
                 max = clothesMax;
                 textures = clothes.ToArray();
                 matIndex = 6;

@@ -95,7 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc5773fa4f86ddd479cc99b406f69a1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterName: 0
+  characterName: ENTER NAME HERE
   characterClass: 0
   selectedClass:
   - Barbarian
@@ -136,12 +136,12 @@ MonoBehaviour:
   mouth: []
   armour: []
   clothes: []
-  skinIndex: 1
-  eyesIndex: 1
-  mouthIndex: 1
-  hairIndex: 1
-  armourIndex: 1
-  clothesIndex: 1
+  skinIndex: 0
+  eyesIndex: 0
+  mouthIndex: 0
+  hairIndex: 0
+  armourIndex: 0
+  clothesIndex: 0
   characterRenderer: {fileID: 0}
   skinMax: 4
   eyesMax: 4
