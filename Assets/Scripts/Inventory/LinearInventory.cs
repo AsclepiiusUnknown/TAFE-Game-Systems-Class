@@ -30,6 +30,9 @@ public class LinearInventory : MonoBehaviour
 
     public Equipment[] equipmentSlots;
 
+    public static Chest currentChest;
+    public static Shop currentShop;
+
     void Start()
     {
         player = this.gameObject.GetComponent<PlayerHandler>();
@@ -64,6 +67,9 @@ public class LinearInventory : MonoBehaviour
                 Time.timeScale = 1;
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
+                if (currentChest != null)
+                    currentChest.showChestInv = false;
+                currentChest = null;
                 return;
             }
         }
@@ -175,11 +181,15 @@ public class LinearInventory : MonoBehaviour
 
     void UseItem()
     {
-        GUI.Box(new Rect(4.75f * scr.x, 0.25f * scr.y, 4 * scr.x, 4 * scr.y), selectedItem.Icon, Styles[0]);
-        GUI.Box(new Rect(4.75f * scr.x - 7, 0.25f * scr.y - 7, 4 * scr.x + 14, 4 * scr.y + 14), "", Styles[1]);
+        GUI.Box(new Rect(4.25f * scr.x, 0.5f * scr.y, 3 * scr.x, 3 * scr.y), selectedItem.Icon, Styles[0]);
+        GUI.Box(new Rect(4.55f * scr.x, 3.5f * scr.y, 2.5f * scr.x, .5f * scr.y), selectedItem.Name);
+        GUI.Box(new Rect(4.25f * scr.x, 4 * scr.y, 3 * scr.x, 3 * scr.y), selectedItem.Description + "\nValue: " + selectedItem.Value + "\nAmount: " + selectedItem.Amount, Styles[3]);
+        GUI.Box(new Rect(4 * scr.x, 0.25f * scr.y, 3.5f * scr.x, 7 * scr.y), "", Styles[1]);
+
 
         string armourTemptext = "", healTemptext = "", damageTemptext = "";
 
+        #region Extra Checks
         if (selectedItem.Armour > 0)
         {
             armourTemptext = "\nArmour: " + selectedItem.Armour;
@@ -192,18 +202,14 @@ public class LinearInventory : MonoBehaviour
         {
             damageTemptext = "\nDamage: " + selectedItem.Damage;
         }
-
-        GUI.Box(new Rect(4.75f * scr.x, 0.25f * scr.y + 4 * scr.x, 4 * scr.x, 2 * scr.y), selectedItem.Description + "\nValue: " + selectedItem.Value + "\nAmount: " + selectedItem.Amount + armourTemptext + healTemptext + damageTemptext, Styles[3]);
-
-
-
+        #endregion
 
         switch (selectedItem.Type)
         {
             case ItemType.Food:
                 if (player.attributes[0].currentValue < player.attributes[0].maxValue)
                 {
-                    if (GUI.Button(new Rect(4.75f * scr.x, 8 * scr.y, scr.x, 0.25f * scr.y), "Eat"))
+                    if (GUI.Button(new Rect(4.5f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Eat"))
                     {
                         //player.attributes[0].currentValue = mathf
                         if (selectedItem.Amount > 1)
@@ -222,65 +228,67 @@ public class LinearInventory : MonoBehaviour
 
                 break;
             case ItemType.Weapon:
-                if (equipmentSlots[3].currentItem == null || selectedItem.Name != equipmentSlots[3].currentItem.name)
+                if (equipmentSlots[2].currentItem == null || selectedItem.Name != equipmentSlots[2].currentItem.name)
                 {
-                    if (GUI.Button(new Rect(4.75f * scr.x, 8 * scr.y, scr.x, 0.25f * scr.y), "Equip"))
+                    if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Equip"))
                     {
-                        if (equipmentSlots[3].currentItem != null)
+                        //IF we have something equipped 
+                        if (equipmentSlots[2].currentItem != null)
                         {
-                            Destroy(equipmentSlots[3].currentItem);
+                            Destroy(equipmentSlots[2].currentItem);
                         }
                         GameObject currentItem = Instantiate(selectedItem.Mesh, equipmentSlots[3].equipLocation);
+                        equipmentSlots[2].currentItem = currentItem;
                         currentItem.name = selectedItem.Name;
                     }
                 }
                 else
                 {
-                    if (GUI.Button(new Rect(4.75f * scr.x, 8 * scr.y, scr.x, 0.25f * scr.y), "Unequip"))
+                    if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Unequip"))
                     {
-                        Destroy(equipmentSlots[3].currentItem);
+                        Destroy(equipmentSlots[2].currentItem);
                     }
                 }
 
                 break;
             case ItemType.Apparel:
-                if (GUI.Button(new Rect(4.75f * scr.x, 8 * scr.y, scr.x, 0.25f * scr.y), "Equip"))
+                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Equip"))
                 {
 
                 }
                 break;
             case ItemType.Crafting:
-                if (GUI.Button(new Rect(4.75f * scr.x, 8 * scr.y, scr.x, 0.25f * scr.y), "Craft"))
+                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Craft"))
                 {
 
                 }
                 break;
             case ItemType.Ingredients:
-                if (GUI.Button(new Rect(4.75f * scr.x, 8 * scr.y, scr.x, 0.25f * scr.y), "Create"))
+                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Create"))
                 {
 
                 }
                 break;
             case ItemType.Potions:
-                if (GUI.Button(new Rect(4.75f * scr.x, 8 * scr.y, scr.x, 0.25f * scr.y), "Consume"))
+                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Consume"))
                 {
 
                 }
                 break;
             case ItemType.Scrolls:
-                if (GUI.Button(new Rect(4.75f * scr.x, 8 * scr.y, scr.x, 0.25f * scr.y), "Use"))
+                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Use"))
                 {
 
                 }
                 break;
             case ItemType.Quest:
-                if (GUI.Button(new Rect(4.75f * scr.x, 8 * scr.y, scr.x, 0.25f * scr.y), "Accept"))
+                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Accept"))
                 {
 
                 }
                 break;
             case ItemType.Money:
-                if (GUI.Button(new Rect(4.75f * scr.x, 8 * scr.y, scr.x, 0.25f * scr.y), "Equip"))
+                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Equip"))
                 {
 
                 }
@@ -288,6 +296,88 @@ public class LinearInventory : MonoBehaviour
             default:
                 break;
         }
+
+        if (GUI.Button(new Rect(5.25f * scr.x, 6.75f * scr.y, scr.x, 0.25f * scr.y), "Discard"))
+        {
+            for (int i = 0; i < equipmentSlots.Length; i++)
+            {
+                //Check Slots
+                if (equipmentSlots[i].currentItem != null && selectedItem.Name == equipmentSlots[i].currentItem.name)
+                {
+                    //Destroy the one in our equiptment
+                    Destroy(equipmentSlots[i].currentItem);
+                }
+            }
+
+            //Spawn the item
+            GameObject droppedItem = Instantiate(selectedItem.Mesh, dropLocation.position, Quaternion.identity);
+            droppedItem.name = selectedItem.Name;
+            droppedItem.AddComponent<Rigidbody>().useGravity = true;
+            droppedItem.GetComponent<ItemHandler>().enabled = true;
+
+            if (selectedItem.Amount > 1)
+            {
+                Debug.Log(selectedItem.Amount.ToString());
+                selectedItem.Amount--;
+            }
+            else
+            {
+                inv.Remove(selectedItem);
+                selectedItem = null;
+                return;
+            }
+        }
+
+        if (currentChest != null)
+        {
+            if (GUI.Button(new Rect(5.75f * scr.x, 6.5f * scr.y, scr.x, .25f * scr.y), "Move Item"))
+            {
+                for (int i = 0; i < equipmentSlots.Length; i++)
+                {
+                    if (equipmentSlots[i].currentItem != null && selectedItem.Name == equipmentSlots[i].currentItem.name)
+                    {
+                        Destroy(equipmentSlots[i].currentItem);
+                    }
+                }
+                currentChest.chestInv.Add(selectedItem);
+                if (selectedItem.Amount > 1)
+                {
+                    selectedItem.Amount--;
+                }
+                else
+                {
+                    inv.Remove(selectedItem);
+                    selectedItem = null;
+                    return;
+                }
+            }
+        }
+        if (currentShop != null)
+        {
+            if (GUI.Button(new Rect(5.75f * scr.x, 6.5f * scr.y, scr.x, .25f * scr.y), "Sell Item"))
+            {
+                for (int i = 0; i < equipmentSlots.Length; i++)
+                {
+                    if (equipmentSlots[i].currentItem != null && selectedItem.Name == equipmentSlots[i].currentItem.name)
+                    {
+                        Destroy(equipmentSlots[i].currentItem);
+                    }
+                }
+                money += selectedItem.Value;
+                currentShop.shopInv.Add(selectedItem);
+                if (selectedItem.Amount > 1)
+                {
+                    selectedItem.Amount--;
+                }
+                else
+                {
+                    inv.Remove(selectedItem);
+                    selectedItem = null;
+                    return;
+                }
+            }
+        }
+        GUI.skin = null;
     }
 
     private void OnGUI()

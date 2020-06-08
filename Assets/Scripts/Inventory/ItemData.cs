@@ -15,6 +15,11 @@ public static class ItemData
         int _armour = 0;
         int _heal = 0;
 
+        void Start()
+        {
+
+        }
+
         switch (itemID)
         {
             #region Food 0 - 99
@@ -241,7 +246,7 @@ public static class ItemData
             Amount = _amount,
             Type = _type,
             Icon = Resources.Load("Icons/" + _icon) as Texture2D,
-            Mesh = Resources.Load("Icons/" + _mesh) as GameObject,
+            Mesh = Resources.Load("Mesh/" + _mesh) as GameObject,
         };
 
         return temp;
