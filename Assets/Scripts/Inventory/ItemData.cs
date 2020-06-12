@@ -98,7 +98,7 @@ public static class ItemData
                 _armour = 15;
                 break;
             case 202:
-                _name = "Braces";
+                _name = "Bracers";
                 _description = "Looking fancy and chucking a wonderwoman";
                 _value = 10;
                 _amount = 1;
@@ -217,8 +217,44 @@ public static class ItemData
             #region Ingredients 400 - 499
             #endregion
             #region Potions 500 - 599
+            case 500:
+                _name = "Health Potion";
+                _description = "";
+                _value = 120;
+                _amount = 1;
+                _icon = "Potions/HealthPotion";
+                _mesh = "Potions/HealthPotion";
+                _type = ItemType.Potions;
+                break;
+            case 501:
+                _name = "Ring";
+                _description = "";
+                _value = 140;
+                _amount = 1;
+                _icon = "Potions/Mana";
+                _mesh = "Potions/Mana";
+                _type = ItemType.Potions;
+                break;
             #endregion
             #region Scrolls 600 - 699
+            case 600:
+                _name = "Book";
+                _description = "";
+                _value = 25;
+                _amount = 1;
+                _icon = "Scrolls/Book";
+                _mesh = "Scrolls/Bookv";
+                _type = ItemType.Scrolls;
+                break;
+            case 601:
+                _name = "Scroll";
+                _description = "";
+                _value = 10;
+                _amount = 1;
+                _icon = "Scrolls/Book";
+                _mesh = "Scrolls/Book";
+                _type = ItemType.Scrolls;
+                break;
             #endregion
             #region Quests 700 - 799
             #endregion

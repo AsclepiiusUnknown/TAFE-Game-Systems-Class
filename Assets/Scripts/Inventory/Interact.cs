@@ -7,13 +7,16 @@ public class Interact : MonoBehaviour
 {
     #region  Variables
     [Header("Player & Camera connection")]
-    public GameObject player;
+    public PlayerHandler player;
     public GameObject mainCamera;
     public CanvasDialogueManager dlgMaster;
     #endregion
 
     #region Start
-
+    void Start()
+    {
+        player = GetComponent<PlayerHandler>();
+    }
     #endregion
 
     void Update()
@@ -48,7 +51,7 @@ public class Interact : MonoBehaviour
                     }
                     #region HardCode Dialogue
                     //Debug that we hit a NPC    
-                    Debug.Log("Talk to the NPC");
+                    Debug.Log("Talked to the NPC");
                     //THIS ONE HERE IS FOR DIALOGUE
                     if (hitInfo.collider.GetComponent<Dialogue>())
                     {
@@ -88,7 +91,8 @@ public class Interact : MonoBehaviour
                     ItemHandler handler = hitInfo.transform.GetComponent<ItemHandler>();
                     if (handler != null)
                     {
-                        handler.OnCollection();
+                        player.quest.goal.ItemCollected(handler.itemId); //adds count to quest
+                        handler.OnCollection(); //adds item to inventory
                     }
                 }
 

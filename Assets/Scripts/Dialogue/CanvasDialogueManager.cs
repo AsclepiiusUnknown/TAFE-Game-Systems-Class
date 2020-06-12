@@ -8,6 +8,7 @@ public class CanvasDialogueManager : MonoBehaviour
     public GameObject dialoguePanel;
     public Text dialogueText;
     public Text buttonText;
+
     public string characterNpcName;
     public string[] currentDialogue;
     public int index;

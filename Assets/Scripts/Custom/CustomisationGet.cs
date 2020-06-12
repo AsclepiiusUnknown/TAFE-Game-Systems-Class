@@ -1,11 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CustomisationGet : MonoBehaviour
 {
+    [Header("General")]
     public Renderer characterRenderer;
     public GameObject player;
+
+    [Header("UI Components")]
+    public Text nameDisplay;
+    public Text classDisplay;
+    public Text abilityDisplay;
 
     void Start()
     {
@@ -21,7 +28,16 @@ public class CustomisationGet : MonoBehaviour
         SetTexture("Mouth", PlayerPrefs.GetInt("Mouth Index"));
         SetTexture("Clothes", PlayerPrefs.GetInt("Clothes Index"));
         SetTexture("Armour", PlayerPrefs.GetInt("Armour Index"));
-        player.name = PlayerPrefs.GetString("Character Name");
+
+        if (PlayerPrefs.GetString("Character Name") != null)
+        {
+            player.name = PlayerPrefs.GetString("Character Name");
+            nameDisplay.text = "NAME: " + PlayerPrefs.GetString("Character Name");
+        }
+
+        classDisplay.text = "CLASS: " + PlayerPrefs.GetString("Character Class");
+
+        abilityDisplay.text = "ABILITY: " + PlayerPrefs.GetString("Character Ability");
     }
 
     void SetTexture(string type, int index)

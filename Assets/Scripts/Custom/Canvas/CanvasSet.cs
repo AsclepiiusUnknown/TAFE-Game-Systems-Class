@@ -46,12 +46,18 @@ public class CanvasSet : MonoBehaviour
     [Header("Point UI")]
     public PointUI[] pointSystem;
 
+    [Header("Point Pool")]
+    public Text poolDisplay;
+
     [Header("Character Class")]
     public CanvasCharacterClass canvasCharClass = CanvasCharacterClass.Barbarian;
     public string[] selectedClass = new string[8];
     public int selectedClassIndex = 0;
     public string classButton = "";
     public int statPoints = 10;
+    [HideInInspector]
+    public string classString;
+    public CharacterAbility characterAbility;
 
     public CanvasStats[] characterStats;
     [System.Serializable]
@@ -131,6 +137,8 @@ public class CanvasSet : MonoBehaviour
             pointSystem[i].nameDisplay.text = pointSystem[i].stat.name + ": " + (pointSystem[i].stat.value + pointSystem[i].stat.tempValue); //Set up the names and value to display correctly and automatically
             pointSystem[i].minusButton.SetActive(false); //Disable the minus button as we dont need it yet
         }
+
+        poolDisplay.text = "Points: " + statPoints;
         #endregion
     }
     #endregion
@@ -202,6 +210,7 @@ public class CanvasSet : MonoBehaviour
             index = 0;
         }
         Material[] mat = characterRenderer.materials;
+        //Debug.Log(matIndex.ToString());
         mat[matIndex].mainTexture = textures[index];
         characterRenderer.materials = mat;
         //skinMax;
@@ -264,6 +273,9 @@ public class CanvasSet : MonoBehaviour
                 characterStats[5].baseStats = 5;
 
                 canvasCharClass = CanvasCharacterClass.Barbarian;
+                characterAbility = CharacterAbility.FeralMight;
+                classString = "Barbarian";
+                print("class set to " + classString);
                 break;
             case 1:
                 //Base Stat Values
@@ -274,7 +286,10 @@ public class CanvasSet : MonoBehaviour
                 characterStats[4].baseStats = 6;
                 characterStats[5].baseStats = 18;
 
-                canvasCharClass = CanvasCharacterClass.Bard;
+                canvasCharClass = CanvasCharacterClass.Bard; characterAbility = CharacterAbility.FeralMight;
+                characterAbility = CharacterAbility.SongOfRest;
+                classString = "Bard";
+                print("class set to " + classString);
                 break;
             case 2:
                 //Base Stat Values
@@ -286,6 +301,9 @@ public class CanvasSet : MonoBehaviour
                 characterStats[5].baseStats = 15;
 
                 canvasCharClass = CanvasCharacterClass.Druid;
+                characterAbility = CharacterAbility.BalanceOfNature;
+                classString = "Druid";
+                print("class set to " + classString);
                 break;
             case 3:
                 //Base Stat Values
@@ -297,6 +315,9 @@ public class CanvasSet : MonoBehaviour
                 characterStats[5].baseStats = 4;
 
                 canvasCharClass = CanvasCharacterClass.Monk;
+                characterAbility = CharacterAbility.MonasticTradition;
+                classString = "Monk";
+                print("class set to " + classString);
                 break;
             case 4:
                 //Base Stat Values
@@ -308,6 +329,9 @@ public class CanvasSet : MonoBehaviour
                 characterStats[5].baseStats = 18;
 
                 canvasCharClass = CanvasCharacterClass.Paladin;
+                characterAbility = CharacterAbility.ChannelDivinity;
+                classString = "Paladin";
+                print("class set to " + classString);
                 break;
             case 5:
                 //Base Stat Values
@@ -319,6 +343,9 @@ public class CanvasSet : MonoBehaviour
                 characterStats[5].baseStats = 8;
 
                 canvasCharClass = CanvasCharacterClass.Ranger;
+                characterAbility = CharacterAbility.BeastMastery;
+                classString = "Ranger";
+                print("class set to " + classString);
                 break;
             case 6:
                 //Base Stat Values
@@ -330,6 +357,9 @@ public class CanvasSet : MonoBehaviour
                 characterStats[5].baseStats = 5;
 
                 canvasCharClass = CanvasCharacterClass.Sorcerer;
+                characterAbility = CharacterAbility.CosmicPersistence;
+                classString = "Sorcerer";
+                print("class set to " + classString);
                 break;
             case 7:
                 //Base Stat Values
@@ -341,6 +371,9 @@ public class CanvasSet : MonoBehaviour
                 characterStats[5].baseStats = 18;
 
                 canvasCharClass = CanvasCharacterClass.Warlock;
+                characterAbility = CharacterAbility.EldritchBlast;
+                classString = "Warlock";
+                print("class set to " + classString);
                 break;
         }
     }
@@ -348,240 +381,84 @@ public class CanvasSet : MonoBehaviour
     public void SetPointsPos(int i)
     {
         //Change the values
-        statPoints--;
-        pointSystem[i].stat.tempValue++;
+        statPoints--; //reduce the points in the point pool
+        pointSystem[i].stat.tempValue++; //increase the correct temp value
+        poolDisplay.text = "Points: " + statPoints; //Display the points in the point pool
+
+        for (int a = 0; a < pointSystem.Length; a++) //For each element within the point system
+        {
+            pointSystem[a].nameDisplay.text = pointSystem[a].stat.name + ": " + (pointSystem[a].stat.value + pointSystem[a].stat.tempValue); //Set up the names and value to display correctly and automatically
+        }
 
         //If we have no points hide the + button
-        if (statPoints <= 0)
+        if (statPoints <= 0) //if there are no more points in the point pool
         {
-            for (int button = 0; button < pointSystem.Length; button++)
+            for (int b = 0; b < pointSystem.Length; b++) //for each element within the point system
             {
-                pointSystem[button].plusButton.SetActive(false);
+                pointSystem[b].plusButton.SetActive(false); //disable the + button
             }
-
-            //If we havent yet shownt he - button then do so
-            if (pointSystem[i].minusButton.activeSelf == false)
-            {
-                pointSystem[i].minusButton.SetActive(true);
-            }
-
-            //Update the appropriate text element
-            pointSystem[i].nameDisplay.text = pointSystem[i].stat.name + ": " + (pointSystem[i].stat.value + pointSystem[i].stat.tempValue);
         }
+
+        if (pointSystem[i].minusButton.activeSelf == false) //if the - button is disabled
+        {
+            pointSystem[i].minusButton.SetActive(true); //enable the - button
+        }
+
+        //Update the appropriate text element
+        pointSystem[i].nameDisplay.text = pointSystem[i].stat.name + ": " + (pointSystem[i].stat.value + pointSystem[i].stat.tempValue);
+    }
+
+    public void SetPointsNeg(int i)
+    {
+        //Change the values
+        statPoints++;
+        pointSystem[i].stat.tempValue--;
+        poolDisplay.text = "Points: " + statPoints;
+
+        for (int a = 0; a < pointSystem.Length; a++) //For each element within the point system
+        {
+            pointSystem[a].nameDisplay.text = pointSystem[a].stat.name + ": " + (pointSystem[a].stat.value + pointSystem[a].stat.tempValue); //Set up the names and value to display correctly and automatically
+        }
+
+        //If we have no temp values disable the - button
+        if (pointSystem[i].stat.tempValue <= 0)
+        {
+            pointSystem[i].minusButton.SetActive(false);
+        }
+
+        //If we have points to spend show all + buttons
+        if (pointSystem[i].plusButton.activeSelf == false)
+        {
+            for (int b = 0; b < pointSystem.Length; b++)
+            {
+                pointSystem[b].plusButton.SetActive(true);
+            }
+        }
+
+        //Update the appropriate text element
+        pointSystem[i].nameDisplay.text = pointSystem[i].stat.name + ": " + (pointSystem[i].stat.value + pointSystem[i].stat.tempValue);
     }
     #endregion
 
     #region Random & Reset
     public void RandomiseChoice(int typeCount) //Type count is how many types of customisable types there are (eg. skin, hair, eyes, etc)
     {
-        int index = 0, max = 0, matIndex = 0;
-        Texture2D[] textures = new Texture2D[0];
-
-        for (int typeIndex = 0; typeIndex < typeCount; typeIndex++)
-        {
-            switch (typeIndex)
-            {
-                case 0: //Skin
-                    index = skinIndex;
-                    max = skinMax;
-                    textures = skin.ToArray();
-                    matIndex = 1;
-                    break;
-                case 1: //Eyes
-                    index = eyesIndex;
-                    max = eyesMax;
-                    textures = eyes.ToArray();
-                    matIndex = 2;
-                    break;
-                case 2: //Mouth
-                    index = mouthIndex;
-                    max = mouthMax;
-                    textures = mouth.ToArray();
-                    matIndex = 3;
-                    break;
-                case 3: //Hair
-                    index = hairIndex;
-                    max = hairMax;
-                    textures = hair.ToArray();
-                    matIndex = 4;
-                    break;
-                case 4: //Clothes
-                    index = clothesIndex;
-                    max = clothesMax;
-                    textures = clothes.ToArray();
-                    matIndex = 5;
-                    break;
-                case 5: //Armour
-                    index = armourIndex;
-                    max = armourMax;
-                    textures = armour.ToArray();
-                    matIndex = 6;
-                    break;
-            }
-
-            int randomIndex = Random.Range(0, max);
-
-            index += randomIndex;
-
-            if (index < 0)
-            {
-                index = max - 1;
-            }
-            if (index > max - 1)
-            {
-                index = 0;
-            }
-            Material[] mat = characterRenderer.materials;
-            mat[matIndex].mainTexture = textures[index];
-            characterRenderer.materials = mat;
-            //skinMax;
-            //public int eyesMax, mouthMax, hairMax, armourMax, clothesMax;
-
-            switch (typeIndex)
-            {
-                case 0: //Skin
-                    skinIndex = index;
-                    max = skinMax;
-                    textures = skin.ToArray();
-                    matIndex = 1;
-                    break;
-                case 1: //Eyes
-                    eyesIndex = index;
-                    max = eyesMax;
-                    textures = eyes.ToArray();
-                    matIndex = 2;
-                    break;
-                case 2: //Mouth
-                    mouthIndex = index;
-                    max = mouthMax;
-                    textures = mouth.ToArray();
-                    matIndex = 3;
-                    break;
-                case 3: //Hair
-                    hairIndex = index;
-                    max = hairMax;
-                    textures = hair.ToArray();
-                    matIndex = 4;
-                    break;
-                case 4: //Clothes
-                    armourIndex = index;
-                    max = armourMax;
-                    textures = armour.ToArray();
-                    matIndex = 5;
-                    break;
-                case 5: //Armour
-                    clothesIndex = index;
-                    max = clothesMax;
-                    textures = clothes.ToArray();
-                    matIndex = 6;
-                    break;
-            }
-        }
+        SetTexture("Skin", skinIndex = Random.Range(0, skinMax - 1));
+        SetTexture("Hair", hairIndex = Random.Range(0, hairMax - 1));
+        SetTexture("Mouth", mouthIndex = Random.Range(0, mouthMax - 1));
+        SetTexture("Eyes", eyesIndex = Random.Range(0, eyesMax - 1));
+        SetTexture("Clothes", clothesIndex = Random.Range(0, clothesMax - 1));
+        SetTexture("Armour", armourIndex = Random.Range(0, armourMax - 1));
     }
 
     public void ResetAll(int typeCount)
     {
-        int index = 0, max = 0, matIndex = 0;
-        Texture2D[] textures = new Texture2D[0];
-
-        for (int typeIndex = 0; typeIndex < typeCount; typeIndex++)
-        {
-            switch (typeIndex)
-            {
-                case 0: //Skin
-                    index = skinIndex;
-                    max = skinMax;
-                    textures = skin.ToArray();
-                    matIndex = 1;
-                    break;
-                case 1: //Eyes
-                    index = eyesIndex;
-                    max = eyesMax;
-                    textures = eyes.ToArray();
-                    matIndex = 2;
-                    break;
-                case 2: //Mouth
-                    index = mouthIndex;
-                    max = mouthMax;
-                    textures = mouth.ToArray();
-                    matIndex = 3;
-                    break;
-                case 3: //Hair
-                    index = hairIndex;
-                    max = hairMax;
-                    textures = hair.ToArray();
-                    matIndex = 4;
-                    break;
-                case 4: //Clothes
-                    index = clothesIndex;
-                    max = clothesMax;
-                    textures = clothes.ToArray();
-                    matIndex = 5;
-                    break;
-                case 5: //Armour
-                    index = armourIndex;
-                    max = armourMax;
-                    textures = armour.ToArray();
-                    matIndex = 6;
-                    break;
-            }
-
-            index += 0;
-
-            if (index < 0)
-            {
-                index = max - 1;
-            }
-            if (index > max - 1)
-            {
-                index = 0;
-            }
-            Material[] mat = characterRenderer.materials;
-            mat[matIndex].mainTexture = textures[index];
-            characterRenderer.materials = mat;
-            //skinMax;
-            //public int eyesMax, mouthMax, hairMax, armourMax, clothesMax;
-
-            switch (typeIndex)
-            {
-                case 0: //Skin
-                    skinIndex = index;
-                    max = skinMax;
-                    textures = skin.ToArray();
-                    matIndex = 1;
-                    break;
-                case 1: //Eyes
-                    eyesIndex = index;
-                    max = eyesMax;
-                    textures = eyes.ToArray();
-                    matIndex = 2;
-                    break;
-                case 2: //Mouth
-                    mouthIndex = index;
-                    max = mouthMax;
-                    textures = mouth.ToArray();
-                    matIndex = 3;
-                    break;
-                case 3: //Hair
-                    hairIndex = index;
-                    max = hairMax;
-                    textures = hair.ToArray();
-                    matIndex = 4;
-                    break;
-                case 4: //Clothes
-                    armourIndex = index;
-                    max = armourMax;
-                    textures = armour.ToArray();
-                    matIndex = 5;
-                    break;
-                case 5: //Armour
-                    clothesIndex = index;
-                    max = clothesMax;
-                    textures = clothes.ToArray();
-                    matIndex = 6;
-                    break;
-            }
-        }
+        SetTexture("Skin", skinIndex = 0);
+        SetTexture("Hair", hairIndex = 0);
+        SetTexture("Mouth", mouthIndex = 0);
+        SetTexture("Eyes", eyesIndex = 0);
+        SetTexture("Clothes", clothesIndex = 0);
+        SetTexture("Armour", armourIndex = 0);
     }
     #endregion
 
@@ -604,12 +481,14 @@ public class CanvasSet : MonoBehaviour
 
         PlayerPrefs.SetString("Character Name", characterName);
 
+        PlayerPrefs.SetString("Character Class", classString);
+
+        PlayerPrefs.SetString("Character Ability", characterAbility.ToString());
+
         for (int i = 0; i < characterStats.Length; i++)
         {
             PlayerPrefs.SetInt(characterStats[i].baseStatsName, characterStats[i].baseStats + characterStats[i].tempStats);
         }
-
-        PlayerPrefs.SetString("Character Class", selectedClass[selectedClassIndex]);
 
         if (play)
         {
@@ -633,5 +512,16 @@ public class CanvasSet : MonoBehaviour
         Ranger,
         Sorcerer,
         Warlock
+    }
+    public enum CharacterAbility
+    {
+        FeralMight,
+        SongOfRest,
+        BalanceOfNature,
+        MonasticTradition,
+        ChannelDivinity,
+        BeastMastery,
+        CosmicPersistence,
+        EldritchBlast
     }
 }

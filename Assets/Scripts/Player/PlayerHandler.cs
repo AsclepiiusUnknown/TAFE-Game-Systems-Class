@@ -11,9 +11,14 @@ public class PlayerHandler : Character
     public CharacterController controller;
     public float gravity = 20f;
     public Vector3 moveDirection;
+
     [Header("Level Data")]
     public int level = 0;
+
+    [Header("Quests")]
     public float currentExp, neededExp, maxExp;
+    public Quest quest; //Make this a list to have more quests
+
     [Header("Damage Flash and Death")]
     public Image damageImage;
     public Image deathImage;
@@ -21,14 +26,20 @@ public class PlayerHandler : Character
     public AudioClip deathClip;
     public AudioSource playersAudio;
     public Transform currentCheckPoint;
-    //                                   R G B A
     public Color flashColour = new Color(1, 0, 0, 0.2f);
     public float flashSpeed = 5f;
     public static bool isDead;
     public bool isDamaged;
     public bool canHeal;
     public float healDelayTimer;
+
+    [Header("Player UI")]
+    public GameObject crosshairImage;
+
+    public CanvasSet canvasSet;
+
     #endregion
+
     #region Behaviour
     void Start()
     {
@@ -42,7 +53,14 @@ public class PlayerHandler : Character
             if (controller.isGrounded)
             {
                 moveDirection = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
-                moveDirection *= speed;
+
+                if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+                    moveDirection *= sprint;
+                else if (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.LeftControl))
+                    moveDirection *= crouch;
+                else
+                    moveDirection *= speed;
+
                 if (Input.GetButton("Jump"))
                 {
                     moveDirection.y = jumpSpeed;
@@ -91,6 +109,19 @@ public class PlayerHandler : Character
         {
             HealOverTime();
         }
+
+        if (crosshairImage != null)
+        {
+            if (PauseMenu.isPaused)
+            {
+                crosshairImage.SetActive(false);
+            }
+            else
+            {
+                crosshairImage.SetActive(true);
+            }
+        }
+
     }
     public void DamagePlayer(float damage)
     {
@@ -132,6 +163,24 @@ public class PlayerHandler : Character
             }
             PlayerSaveAndLoad.Save();
 
+        }
+    }
+    #endregion
+
+    #region Quest
+    public void KilledCreature(string enemyTag)
+    {
+        if (quest.goal.questState == QuestState.Active)
+        {
+            quest.goal.EnemyKilled(enemyTag);
+        }
+    }
+
+    public void ItemsCollected(int ID)
+    {
+        if (quest.goal.questState == QuestState.Active)
+        {
+            quest.goal.ItemCollected(ID);
         }
     }
     #endregion

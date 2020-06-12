@@ -3,7 +3,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 public static class PlayerBinary
 {
-   public static void SavePlayerData(PlayerHandler player)
+    public static void SavePlayerData(PlayerHandler player)
     {
         //Reference a Binary Formatter
         BinaryFormatter formatter = new BinaryFormatter();

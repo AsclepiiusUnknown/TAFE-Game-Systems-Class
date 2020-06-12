@@ -38,13 +38,17 @@ public class LinearInventory : MonoBehaviour
         player = this.gameObject.GetComponent<PlayerHandler>();
         enumTypesForItems = new string[] { "Food", "Weapon", "Apparel", "Crafting", "Ingredients", "Potions", "Scrolls", "Quest", "Money" };
 
-        inv.Add(ItemData.CreateItem(0));
-        inv.Add(ItemData.CreateItem(1));
-        inv.Add(ItemData.CreateItem(30)); //broken example
-        inv.Add(ItemData.CreateItem(100));
-        inv.Add(ItemData.CreateItem(101));
-        inv.Add(ItemData.CreateItem(102));
-        inv.Add(ItemData.CreateItem(201));
+        int a = Random.Range(1, 5);
+        for (int i = 0; i < a; i++)
+        {
+            inv.Add(ItemData.CreateItem(Random.Range(0, 2)));
+            inv.Add(ItemData.CreateItem(Random.Range(100, 103)));
+            inv.Add(ItemData.CreateItem(Random.Range(200, 212)));
+            inv.Add(ItemData.CreateItem(Random.Range(200, 212)));
+            inv.Add(ItemData.CreateItem(Random.Range(300, 302)));
+            inv.Add(ItemData.CreateItem(Random.Range(500, 502)));
+            inv.Add(ItemData.CreateItem(Random.Range(600, 602)));
+        }
     }
 
     void Update()

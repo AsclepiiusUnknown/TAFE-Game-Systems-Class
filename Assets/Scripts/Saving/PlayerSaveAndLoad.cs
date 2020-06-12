@@ -6,7 +6,7 @@ public class PlayerSaveAndLoad : MonoBehaviour
     void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerHandler>();
-        if(!PlayerPrefs.HasKey("Loaded"))
+        if (!PlayerPrefs.HasKey("Loaded"))
         {
             PlayerPrefs.DeleteAll();
             //FirstLoad Function...sets up Player Data
@@ -14,13 +14,13 @@ public class PlayerSaveAndLoad : MonoBehaviour
             //Save Data Creates first save file in binary
             Save();
             //We now have our first save file
-            PlayerPrefs.SetInt("Loaded",0);
+            PlayerPrefs.SetInt("Loaded", 0);
         }
         else
         {
             Load();
         }
-    } 
+    }
     void FirstLoad()
     {
         player.name = "Adventurer";
@@ -65,6 +65,6 @@ public class PlayerSaveAndLoad : MonoBehaviour
         }
 
         player.transform.position = new Vector3(data.pX, data.pY, data.pZ);
-        player.transform.rotation = new Quaternion(data.rX, data.rY, data.rZ,data.rW);        
+        player.transform.rotation = new Quaternion(data.rX, data.rY, data.rZ, data.rW);
     }
 }
