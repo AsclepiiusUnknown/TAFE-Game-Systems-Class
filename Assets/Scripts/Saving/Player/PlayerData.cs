@@ -17,7 +17,7 @@ public class PlayerData
     public PlayerData(PlayerHandler player)
     {
         //Basic
-        playerName = player.canvasSet.characterName;//player.name;
+        //playerName = player.canvasSet.characterName;//player.name;
         level = player.level;
         checkPoint = player.currentCheckPoint.name;
         currentExp = player.currentExp;

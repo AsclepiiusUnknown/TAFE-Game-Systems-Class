@@ -56,7 +56,7 @@ public class CanvasSet : MonoBehaviour
     public string classButton = "";
     public int statPoints = 10;
     [HideInInspector]
-    public string classString;
+    //public string classString;
     public CharacterAbility characterAbility;
 
     public CanvasStats[] characterStats;
@@ -274,8 +274,7 @@ public class CanvasSet : MonoBehaviour
 
                 canvasCharClass = CanvasCharacterClass.Barbarian;
                 characterAbility = CharacterAbility.FeralMight;
-                classString = "Barbarian";
-                print("class set to " + classString);
+                print("class set to " + canvasCharClass.ToString());
                 break;
             case 1:
                 //Base Stat Values
@@ -288,8 +287,7 @@ public class CanvasSet : MonoBehaviour
 
                 canvasCharClass = CanvasCharacterClass.Bard; characterAbility = CharacterAbility.FeralMight;
                 characterAbility = CharacterAbility.SongOfRest;
-                classString = "Bard";
-                print("class set to " + classString);
+                print("class set to " + canvasCharClass.ToString());
                 break;
             case 2:
                 //Base Stat Values
@@ -302,8 +300,7 @@ public class CanvasSet : MonoBehaviour
 
                 canvasCharClass = CanvasCharacterClass.Druid;
                 characterAbility = CharacterAbility.BalanceOfNature;
-                classString = "Druid";
-                print("class set to " + classString);
+                print("class set to " + canvasCharClass.ToString());
                 break;
             case 3:
                 //Base Stat Values
@@ -316,8 +313,7 @@ public class CanvasSet : MonoBehaviour
 
                 canvasCharClass = CanvasCharacterClass.Monk;
                 characterAbility = CharacterAbility.MonasticTradition;
-                classString = "Monk";
-                print("class set to " + classString);
+                print("class set to " + canvasCharClass.ToString());
                 break;
             case 4:
                 //Base Stat Values
@@ -330,8 +326,7 @@ public class CanvasSet : MonoBehaviour
 
                 canvasCharClass = CanvasCharacterClass.Paladin;
                 characterAbility = CharacterAbility.ChannelDivinity;
-                classString = "Paladin";
-                print("class set to " + classString);
+                print("class set to " + canvasCharClass.ToString());
                 break;
             case 5:
                 //Base Stat Values
@@ -344,8 +339,7 @@ public class CanvasSet : MonoBehaviour
 
                 canvasCharClass = CanvasCharacterClass.Ranger;
                 characterAbility = CharacterAbility.BeastMastery;
-                classString = "Ranger";
-                print("class set to " + classString);
+                print("class set to " + canvasCharClass.ToString());
                 break;
             case 6:
                 //Base Stat Values
@@ -358,8 +352,7 @@ public class CanvasSet : MonoBehaviour
 
                 canvasCharClass = CanvasCharacterClass.Sorcerer;
                 characterAbility = CharacterAbility.CosmicPersistence;
-                classString = "Sorcerer";
-                print("class set to " + classString);
+                print("class set to " + canvasCharClass.ToString());
                 break;
             case 7:
                 //Base Stat Values
@@ -372,8 +365,7 @@ public class CanvasSet : MonoBehaviour
 
                 canvasCharClass = CanvasCharacterClass.Warlock;
                 characterAbility = CharacterAbility.EldritchBlast;
-                classString = "Warlock";
-                print("class set to " + classString);
+                print("class set to " + canvasCharClass.ToString());
                 break;
         }
     }
@@ -470,30 +462,9 @@ public class CanvasSet : MonoBehaviour
     #endregion
 
     #region Save & Play
-    public void SaveCharacter(bool play)
+    public void SaveCanvas()
     {
-        PlayerPrefs.SetInt("Skin Index", skinIndex);
-        PlayerPrefs.SetInt("Hair Index", hairIndex);
-        PlayerPrefs.SetInt("Eyes Index", eyesIndex);
-        PlayerPrefs.SetInt("Mouth Index", mouthIndex);
-        PlayerPrefs.SetInt("Clothes Index", clothesIndex);
-        PlayerPrefs.SetInt("Armour Index", armourIndex);
-
-        PlayerPrefs.SetString("Character Name", characterName);
-
-        PlayerPrefs.SetString("Character Class", classString);
-
-        PlayerPrefs.SetString("Character Ability", characterAbility.ToString());
-
-        for (int i = 0; i < characterStats.Length; i++)
-        {
-            PlayerPrefs.SetInt(characterStats[i].baseStatsName, characterStats[i].baseStats + characterStats[i].tempStats);
-        }
-
-        if (play)
-        {
-            Play();
-        }
+        CanvasSaveSystem.SaveCanvas(this);
     }
 
     public void Play()
@@ -501,27 +472,30 @@ public class CanvasSet : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
     #endregion
-
-    public enum CanvasCharacterClass
-    {   //Doesnt matter the type
-        Barbarian,
-        Bard,
-        Druid,
-        Monk,
-        Paladin,
-        Ranger,
-        Sorcerer,
-        Warlock
-    }
-    public enum CharacterAbility
-    {
-        FeralMight,
-        SongOfRest,
-        BalanceOfNature,
-        MonasticTradition,
-        ChannelDivinity,
-        BeastMastery,
-        CosmicPersistence,
-        EldritchBlast
-    }
 }
+
+#region Class & Ability Enums
+public enum CanvasCharacterClass
+{   //Class types (no effect yet, displayed in the HUD)
+    Barbarian,
+    Bard,
+    Druid,
+    Monk,
+    Paladin,
+    Ranger,
+    Sorcerer,
+    Warlock
+}
+public enum CharacterAbility
+{
+    //The special abilities for each class type (no effect yet, displayed in the HUD)
+    FeralMight,
+    SongOfRest,
+    BalanceOfNature,
+    MonasticTradition,
+    ChannelDivinity,
+    BeastMastery,
+    CosmicPersistence,
+    EldritchBlast
+}
+#endregion

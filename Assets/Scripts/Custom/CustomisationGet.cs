@@ -17,27 +17,36 @@ public class CustomisationGet : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        Load();
+        LoadCanvas();
     }
 
-    void Load()
+    void LoadCanvas()
     {
-        SetTexture("Skin", PlayerPrefs.GetInt("Skin Index"));
-        SetTexture("Hair", PlayerPrefs.GetInt("Hair Index"));
-        SetTexture("Eyes", PlayerPrefs.GetInt("Eyes Index"));
-        SetTexture("Mouth", PlayerPrefs.GetInt("Mouth Index"));
-        SetTexture("Clothes", PlayerPrefs.GetInt("Clothes Index"));
-        SetTexture("Armour", PlayerPrefs.GetInt("Armour Index"));
+        CanvasData data = CanvasSaveSystem.LoadCanvas();
 
-        if (PlayerPrefs.GetString("Character Name") != null)
-        {
-            player.name = PlayerPrefs.GetString("Character Name");
-            nameDisplay.text = "NAME: " + PlayerPrefs.GetString("Character Name");
-        }
+        int skinIndex = data.skinIndex;
+        int eyesIndex = data.eyesIndex;
+        int mouthIndex = data.mouthIndex;
+        int hairIndex = data.hairIndex;
+        int armourIndex = data.armourIndex;
+        int clothesIndex = data.clothesIndex;
 
-        classDisplay.text = "CLASS: " + PlayerPrefs.GetString("Character Class");
+        string characterName = data.playerName;
+        string characterClass = data.playerClass;
+        string characterAbility = data.playerAbility;
 
-        abilityDisplay.text = "ABILITY: " + PlayerPrefs.GetString("Character Ability");
+        SetTexture("Skin", skinIndex);
+        SetTexture("Hair", hairIndex);
+        SetTexture("Eyes", eyesIndex);
+        SetTexture("Mouth", mouthIndex);
+        SetTexture("Clothes", clothesIndex);
+        SetTexture("Armour", armourIndex);
+
+        player.name = characterName;
+        nameDisplay.text = "NAME: " + characterName;
+
+        classDisplay.text = "CLASS: " + characterClass;
+        abilityDisplay.text = "ABILITY: " + characterAbility;
     }
 
     void SetTexture(string type, int index)
