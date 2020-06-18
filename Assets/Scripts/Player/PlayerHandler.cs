@@ -52,7 +52,25 @@ public class PlayerHandler : Character
             // base.Movement();
             if (controller.isGrounded)
             {
-                moveDirection = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
+                #region Bind Movement Checks
+                if (Input.GetKey(KeyBindManager.keys["Forward"]))
+                {
+                    moveDirection.z++;
+                }
+                if (Input.GetKey(KeyBindManager.keys["Backward"]))
+                {
+                    moveDirection.z--;
+                }
+                if (Input.GetKey(KeyBindManager.keys["Left"]))
+                {
+                    moveDirection.x--;
+                }
+                if (Input.GetKey(KeyBindManager.keys["Right"]))
+                {
+                    moveDirection.x++;
+                }
+                #endregion
+                //moveDirection = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
 
                 if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
                     moveDirection *= sprint;
