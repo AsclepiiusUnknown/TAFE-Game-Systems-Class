@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class Item
 {
@@ -8,7 +9,7 @@ public class Item
     private string _description;
     private int _value;
     private int _amount;
-    private Texture2D _icon;
+    private Image _icon;
     private GameObject _mesh;
     private ItemType _type;
     private int _damage;
@@ -42,7 +43,7 @@ public class Item
         get { return _amount; }
         set { _amount = value; }
     }
-    public Texture2D Icon
+    public Image Icon
     {
         get { return _icon; }
         set { _icon = value; }

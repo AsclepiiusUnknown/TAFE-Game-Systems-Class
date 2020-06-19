@@ -7,7 +7,7 @@ public static class CanvasSaveSystem
     public static void SaveCanvas(CanvasSet canvas) //Used to save the canvas data
     {
         BinaryFormatter formatter = new BinaryFormatter(); //Create a new binary formatter to use later on
-        string path = Application.persistentDataPath + "/playerCust.bin"; //Create a sctring to store the path to the location we want to save the file
+        string path = Application.persistentDataPath + "/playerCust2.bin"; //Create a sctring to store the path to the location we want to save the file
         FileStream stream = new FileStream(path, FileMode.Create);//Start a new file stream for creating the save file and put in the path
 
         CanvasData data = new CanvasData(canvas); //Create a new instance of our canvas data
@@ -18,7 +18,7 @@ public static class CanvasSaveSystem
 
     public static CanvasData LoadCanvas() //Used to load the canvas data
     {
-        string path = Application.persistentDataPath + "/playerCust.bin"; //Create a sctring to store the path to the location we want to save the file
+        string path = Application.persistentDataPath + "/playerCust2.bin"; //Create a sctring to store the path to the location we want to save the file
 
         if (File.Exists(path)) //If the file exists at our given location
         {

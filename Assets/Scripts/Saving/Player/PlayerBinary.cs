@@ -8,7 +8,7 @@ public static class PlayerBinary
         //Reference a Binary Formatter
         BinaryFormatter formatter = new BinaryFormatter();
         //Location to Save
-        string path = Application.persistentDataPath + "/" + "Kittens" + ".jpeg";
+        string path = Application.persistentDataPath + "/" + "Player" + ".jpeg";
         //Create File at file path
         FileStream stream = new FileStream(path, FileMode.Create);
         //What Data to write to the file
@@ -21,7 +21,7 @@ public static class PlayerBinary
     public static PlayerData LoadPlayerData(PlayerHandler player)
     {
         //Location to Save
-        string path = Application.persistentDataPath + "/" + "Kittens" + ".jpeg";
+        string path = Application.persistentDataPath + "/" + "Player" + ".jpeg";
         //if we have the file at that path
         if (File.Exists(path))
         {

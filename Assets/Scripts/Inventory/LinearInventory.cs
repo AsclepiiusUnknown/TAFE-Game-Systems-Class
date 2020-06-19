@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LinearInventory : MonoBehaviour
 {
@@ -33,12 +34,69 @@ public class LinearInventory : MonoBehaviour
     public static Chest currentChest;
     public static Shop currentShop;
 
+    #region SLOTS
+    [System.Serializable]
+    public struct Slots
+    {
+        public Button slot;
+        public Text slotName;
+        public Item slotItem;
+    }
+    [Header("Slots")]
+    public Slots[] invSlots;
+    public Slots[] chestSlots;
+    #endregion
+
+    #region SELECTION
+    //*ITEM SELECTION//
+    [System.Serializable]
+    public struct Selection
+    {
+        public Image selectionIcon;
+        public Text selectionName;
+        public Text selectionDescription;
+    }
+
+    //*INV SELECTION//
+    [System.Serializable]
+    public struct InvSelection
+    {
+        //The general selection parts
+        public Selection selection;
+
+        //Buttons for en/disabling
+        public Button useItemBtn;
+        public Button discardItemBtn;
+        public Button moveItemBtn;
+
+        //Button text to change depending on item type
+        public Text useItemText;
+    }
+
+    //*CHEST SELECTION//
+    [System.Serializable]
+    public struct ChestSelection
+    {
+        //The general selection parts
+        public Selection selection;
+
+        //Buttons for en/disabling
+        public Button takeItemBtn;
+    }
+
+    [Header("Selection")]
+    public InvSelection invSelection;
+    public ChestSelection chestSelection;
+    public GameObject InvBG;
+    #endregion
+
+
     void Start()
     {
         player = this.gameObject.GetComponent<PlayerHandler>();
         enumTypesForItems = new string[] { "Food", "Weapon", "Apparel", "Crafting", "Ingredients", "Potions", "Scrolls", "Quest", "Money" };
 
-        int a = Random.Range(1, 5);
+        int a = Random.Range(1, 3);
         for (int i = 0; i < a; i++)
         {
             inv.Add(ItemData.CreateItem(Random.Range(0, 2)));
@@ -56,10 +114,97 @@ public class LinearInventory : MonoBehaviour
         scr.x = Screen.width / 16;
         scr.y = Screen.height / 9;
 
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyBindManager.keys["Inventory"]) && !PauseMenu.isPaused)
         {
             showInv = !showInv;
+
             if (showInv)
+            {
+                Time.timeScale = 0;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+
+                InvBG.SetActive(true);
+
+                invSelection.selection.selectionIcon = selectedItem.Icon;
+                invSelection.selection.selectionName.text = selectedItem.Name;
+                #region Description
+                invSelection.selection.selectionDescription.text =
+                "Description: " + selectedItem.Description +
+                "\n Amount: " + selectedItem.Amount +
+                "\n Value: " + selectedItem.Value +
+                "\n Damage: " + selectedItem.Damage +
+                "\n Heal: " + selectedItem.Heal +
+                "\n Armour: " + selectedItem.Armour;
+                #endregion
+
+                #region Button Enabling
+                if (selectedItem.Type == ItemType.Crafting || selectedItem.Type == ItemType.Ingredients || selectedItem.Type == ItemType.Scrolls || selectedItem.Type == ItemType.Quest || selectedItem.Type == ItemType.Money)
+                {
+                    invSelection.useItemBtn.enabled = false;
+                }
+                else
+                {
+                    invSelection.useItemBtn.enabled = true;
+                }
+
+                if (currentChest == null)
+                {
+                    invSelection.moveItemBtn.enabled = false;
+                }
+                else
+                {
+                    invSelection.moveItemBtn.enabled = true;
+                }
+
+                invSelection.discardItemBtn.enabled = true;
+                #endregion
+
+                #region Use Btn Text Element
+                if (invSelection.useItemText != null)
+                {
+                    if (selectedItem.Type == ItemType.Food)
+                    {
+                        invSelection.useItemText.text = "Eat";
+                    }
+                    else if (selectedItem.Type == ItemType.Weapon || selectedItem.Type == ItemType.Apparel)
+                    {
+                        invSelection.useItemText.text = "Equip";
+                    }
+                    else if (selectedItem.Type == ItemType.Potions)
+                    {
+                        invSelection.useItemText.text = "Consume";
+                    }
+                    else
+                    {
+                        invSelection.useItemText.text = "Use";
+                    }
+                }
+                #endregion
+                return;
+            }
+            else
+            {
+                Time.timeScale = 1;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                if (currentChest != null)
+                    currentChest.showChestInv = false;
+                currentChest = null;
+
+                InvBG.SetActive(false);
+
+                invSelection.selection.selectionIcon = null;
+                invSelection.selection.selectionName.text = "";
+                invSelection.selection.selectionDescription.text = "";
+                invSelection.useItemBtn.enabled = false;
+                invSelection.moveItemBtn.enabled = false;
+                invSelection.discardItemBtn.enabled = false;
+                invSelection.useItemText.text = "";
+                return;
+            }
+
+            /**if (showInv)
             {
                 Time.timeScale = 0;
                 Cursor.lockState = CursorLockMode.None;
@@ -75,8 +220,29 @@ public class LinearInventory : MonoBehaviour
                     currentChest.showChestInv = false;
                 currentChest = null;
                 return;
+            }*/
+        }
+
+
+        for (int i = 0; i < invSlots.Length; i++)
+        {
+            //invSlots[i].slot.enabled = (inv[i] != null) ? true : false;
+            if (inv[i] == null)
+            {
+                //disable the slot
+                invSlots[i].slot.enabled = false;
+                // set the name to nothing
+                invSlots[1].slotName.text = "";
+            }
+            else
+            {
+                //enable the slot
+                invSlots[i].slot.enabled = true;
+                // display the name
+                invSlots[1].slotName.text = inv[i].Name + " : " + inv[i].Amount;
             }
         }
+
 #if UNITY_EDITOR
         if (Input.GetKey(KeyCode.I))
         {
@@ -93,6 +259,15 @@ public class LinearInventory : MonoBehaviour
             sortType = "All";
         }
 #endif
+    }
+
+    public void SelectInvSlot(int slotIndex)
+    {
+        Slots slot = invSlots[slotIndex];
+        if (inv[slotIndex] != null)
+        {
+
+        }
     }
 
     void Display()
@@ -185,7 +360,7 @@ public class LinearInventory : MonoBehaviour
 
     void UseItem()
     {
-        GUI.Box(new Rect(4.25f * scr.x, 0.5f * scr.y, 3 * scr.x, 3 * scr.y), selectedItem.Icon, Styles[0]);
+        //GUI.Box(new Rect(4.25f * scr.x, 0.5f * scr.y, 3 * scr.x, 3 * scr.y), selectedItem.Icon, Styles[0]);
         GUI.Box(new Rect(4.55f * scr.x, 3.5f * scr.y, 2.5f * scr.x, .5f * scr.y), selectedItem.Name);
         GUI.Box(new Rect(4.25f * scr.x, 4 * scr.y, 3 * scr.x, 3 * scr.y), selectedItem.Description + "\nValue: " + selectedItem.Value + "\nAmount: " + selectedItem.Amount, Styles[3]);
         GUI.Box(new Rect(4 * scr.x, 0.25f * scr.y, 3.5f * scr.x, 7 * scr.y), "", Styles[1]);
@@ -384,7 +559,7 @@ public class LinearInventory : MonoBehaviour
         GUI.skin = null;
     }
 
-    private void OnGUI()
+    /**private void OnGUI()
     {
         if (showInv)
         {
@@ -402,5 +577,5 @@ public class LinearInventory : MonoBehaviour
                 UseItem();
             }
         }
-    }
+    }*/
 }

@@ -45,14 +45,13 @@ public class PlayerHandler : Character
     {
         controller = this.gameObject.GetComponent<CharacterController>();
     }
-    public override void Movement()
+    public void Movement()
     {
         if (!isDead)
         {
-            // base.Movement();
             if (controller.isGrounded)
             {
-                #region Bind Movement Checks
+                /*#region Bind Movement Checks
                 if (Input.GetKey(KeyBindManager.keys["Forward"]))
                 {
                     moveDirection.z++;
@@ -69,8 +68,8 @@ public class PlayerHandler : Character
                 {
                     moveDirection.x++;
                 }
-                #endregion
-                //moveDirection = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
+                #endregion*/
+                moveDirection = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
 
                 if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
                     moveDirection *= sprint;
@@ -79,18 +78,18 @@ public class PlayerHandler : Character
                 else
                     moveDirection *= speed;
 
-                if (Input.GetButton("Jump"))
+                /*if (Input.GetButton("Jump"))
                 {
                     moveDirection.y = jumpSpeed;
-                }
+                }*/
             }
-            moveDirection.y -= gravity * Time.deltaTime;
+            //moveDirection.y -= gravity * Time.deltaTime;
             controller.Move(moveDirection * Time.deltaTime);
         }
     }
-    public override void Update()
+    public void Update()
     {
-        base.Update();
+        Movement();
         #region Bar Update
 
         for (int i = 0; i < attributes.Length; i++)

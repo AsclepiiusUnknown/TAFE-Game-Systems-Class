@@ -32,20 +32,24 @@ public class KeyBindManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Loop adds the keys to the dictionary (created above) with either save or default (depending on load)
-        for (int i = 0; i < baseSetup.Length; i++) //For all the keys in the base setup array
+        if (keys.Count <= 0)
         {
-            if (hasLoaded)
-                return;
 
-            //Add keys according to the saved string or default
-            keys.Add(baseSetup[i].keyName, (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(baseSetup[i].keyName, baseSetup[i].defaultKey)));
+            //Loop adds the keys to the dictionary (created above) with either save or default (depending on load)
+            for (int i = 0; i < baseSetup.Length; i++) //For all the keys in the base setup array
+            {
+                if (hasLoaded)
+                    return;
 
-            //Change the display to what the Bind is for each UI Text component
-            baseSetup[i].keyDisplayText.text = keys[baseSetup[i].keyName].ToString();
+                //Add keys according to the saved string or default
+                keys.Add(baseSetup[i].keyName, (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString(baseSetup[i].keyName, baseSetup[i].defaultKey)));
+
+                //Change the display to what the Bind is for each UI Text component
+                baseSetup[i].keyDisplayText.text = keys[baseSetup[i].keyName].ToString();
+            }
+
+            hasLoaded = true;
         }
-
-        hasLoaded = true;
     }
 
     #region Changing the Keybinds
