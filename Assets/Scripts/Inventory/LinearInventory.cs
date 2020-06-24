@@ -241,8 +241,8 @@ public class LinearInventory : MonoBehaviour
         }*/
         #endregion
 
-        #region Inventory Slots         //!!Uncomment after HUD Submission
-        /*for (int i = 0; i < invSlots.Length; i++)
+        #region Inventory Slots
+        for (int i = 0; i < invSlots.Length; i++)
         {
             //invSlots[i].slot.enabled = (inv[i] != null) ? true : false;
             if (inv[i] != null)
@@ -259,11 +259,11 @@ public class LinearInventory : MonoBehaviour
                 // set the name to nothing
                 invSlots[1].slotName.text = "";
             }
-        }*/
+        }
         #endregion
 
-        #region Chest Slots             //!!Uncomment after HUD Submission
-        /*if (currentChest != null)
+        #region Chest Slots
+        if (currentChest != null)
         {
             for (int i = 0; i < chestSlots.Length; i++)
             {
@@ -294,7 +294,7 @@ public class LinearInventory : MonoBehaviour
                 // set the name to nothing
                 chestSlots[1].slotName.text = "";
             }
-        }*/
+        }
         #endregion
 
         #region Editor Testing
