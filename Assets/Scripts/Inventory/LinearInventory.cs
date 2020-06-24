@@ -27,7 +27,6 @@ public class LinearInventory : MonoBehaviour
         public Transform equipLocation;
         public GameObject currentItem;
     };
-    #endregion
 
     public Equipment[] equipmentSlots;
 
@@ -87,9 +86,9 @@ public class LinearInventory : MonoBehaviour
     [Header("Selection")]
     public InvSelection invSelection;
     public ChestSelection chestSelection;
-    public GameObject InvBG;
+    public GameObject InvContainer;
     #endregion
-
+    #endregion
 
     void Start()
     {
@@ -111,21 +110,30 @@ public class LinearInventory : MonoBehaviour
 
     void Update()
     {
+        #region Screen Dimensions
         scr.x = Screen.width / 16;
         scr.y = Screen.height / 9;
+        #endregion
 
+        #region Inventory Toggling
         if (Input.GetKeyDown(KeyBindManager.keys["Inventory"]) && !PauseMenu.isPaused)
         {
             showInv = !showInv;
+        }
+        #endregion
 
-            if (showInv)
+        #region Show/Hide Inventory Items
+        if (showInv)
+        {
+            Time.timeScale = 0;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
+            InvContainer.SetActive(true);
+
+            #region Selection Handling
+            if (selectedItem != null)
             {
-                Time.timeScale = 0;
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-
-                InvBG.SetActive(true);
-
                 invSelection.selection.selectionIcon = selectedItem.Icon;
                 invSelection.selection.selectionName.text = selectedItem.Name;
                 #region Description
@@ -139,6 +147,8 @@ public class LinearInventory : MonoBehaviour
                 #endregion
 
                 #region Button Enabling
+                // * //
+                #region Use Item Btn
                 if (selectedItem.Type == ItemType.Crafting || selectedItem.Type == ItemType.Ingredients || selectedItem.Type == ItemType.Scrolls || selectedItem.Type == ItemType.Quest || selectedItem.Type == ItemType.Money)
                 {
                     invSelection.useItemBtn.enabled = false;
@@ -147,15 +157,18 @@ public class LinearInventory : MonoBehaviour
                 {
                     invSelection.useItemBtn.enabled = true;
                 }
+                #endregion
 
-                if (currentChest == null)
-                {
-                    invSelection.moveItemBtn.enabled = false;
-                }
-                else
+                #region Move Item Btn
+                if (currentChest != null)
                 {
                     invSelection.moveItemBtn.enabled = true;
                 }
+                else
+                {
+                    invSelection.moveItemBtn.enabled = false;
+                }
+                #endregion
 
                 invSelection.discardItemBtn.enabled = true;
                 #endregion
@@ -181,19 +194,23 @@ public class LinearInventory : MonoBehaviour
                     }
                 }
                 #endregion
-                return;
             }
-            else
+            #endregion
+        }
+        else
+        {
+            Time.timeScale = 1;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            if (currentChest != null)
+                currentChest.showChestInv = false;
+            currentChest = null;
+
+            InvContainer.SetActive(false);
+
+            #region Selection Handling
+            if (selectedItem != null)
             {
-                Time.timeScale = 1;
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                if (currentChest != null)
-                    currentChest.showChestInv = false;
-                currentChest = null;
-
-                InvBG.SetActive(false);
-
                 invSelection.selection.selectionIcon = null;
                 invSelection.selection.selectionName.text = "";
                 invSelection.selection.selectionDescription.text = "";
@@ -201,48 +218,86 @@ public class LinearInventory : MonoBehaviour
                 invSelection.moveItemBtn.enabled = false;
                 invSelection.discardItemBtn.enabled = false;
                 invSelection.useItemText.text = "";
-                return;
             }
-
-            /**if (showInv)
-            {
-                Time.timeScale = 0;
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                return;
-            }
-            else
-            {
-                Time.timeScale = 1;
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                if (currentChest != null)
-                    currentChest.showChestInv = false;
-                currentChest = null;
-                return;
-            }*/
+            #endregion
         }
 
+        /**if (showInv)
+        {
+            Time.timeScale = 0;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            return;
+        }
+        else
+        {
+            Time.timeScale = 1;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            if (currentChest != null)
+                currentChest.showChestInv = false;
+            currentChest = null;
+            return;
+        }*/
+        #endregion
 
-        for (int i = 0; i < invSlots.Length; i++)
+        #region Inventory Slots         //!!Uncomment after HUD Submission
+        /*for (int i = 0; i < invSlots.Length; i++)
         {
             //invSlots[i].slot.enabled = (inv[i] != null) ? true : false;
-            if (inv[i] == null)
+            if (inv[i] != null)
+            {
+                //enable the slot
+                invSlots[i].slot.enabled = true;
+                // display the name
+                invSlots[i].slotName.text = inv[i].Name + " : " + inv[i].Amount;
+            }
+            else
             {
                 //disable the slot
                 invSlots[i].slot.enabled = false;
                 // set the name to nothing
                 invSlots[1].slotName.text = "";
             }
-            else
+        }*/
+        #endregion
+
+        #region Chest Slots             //!!Uncomment after HUD Submission
+        /*if (currentChest != null)
+        {
+            for (int i = 0; i < chestSlots.Length; i++)
             {
-                //enable the slot
-                invSlots[i].slot.enabled = true;
-                // display the name
-                invSlots[1].slotName.text = inv[i].Name + " : " + inv[i].Amount;
+                //invSlots[i].slot.enabled = (inv[i] != null) ? true : false;
+                if (currentChest.chestInv[i] != null)
+                {
+                    //enable the slot
+                    chestSlots[i].slot.enabled = true;
+                    // display the name
+                    chestSlots[i].slotName.text = currentChest.chestInv[i].Name + " : " + inv[i].Amount;
+                }
+                else
+                {
+                    //disable the slot
+                    chestSlots[i].slot.enabled = false;
+                    // set the name to nothing
+                    chestSlots[1].slotName.text = "";
+                }
             }
         }
+        else
+        {
+            for (int i = 0; i < chestSlots.Length; i++)
+            {
 
+                //disable the slot
+                chestSlots[i].slot.enabled = false;
+                // set the name to nothing
+                chestSlots[1].slotName.text = "";
+            }
+        }*/
+        #endregion
+
+        #region Editor Testing
 #if UNITY_EDITOR
         if (Input.GetKey(KeyCode.I))
         {
@@ -259,6 +314,7 @@ public class LinearInventory : MonoBehaviour
             sortType = "All";
         }
 #endif
+        #endregion
     }
 
     public void SelectInvSlot(int slotIndex)
@@ -266,7 +322,7 @@ public class LinearInventory : MonoBehaviour
         Slots slot = invSlots[slotIndex];
         if (inv[slotIndex] != null)
         {
-
+            selectedItem = invSlots[slotIndex].slotItem;
         }
     }
 

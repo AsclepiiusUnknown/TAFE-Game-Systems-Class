@@ -20,6 +20,19 @@ public class CanvasDialogueManager : MonoBehaviour
         playerMouseLook = GameObject.FindGameObjectWithTag("Player").GetComponent<Player.MouseLook>();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            index = 0;
+            Camera.main.GetComponent<Player.MouseLook>().enabled = true;
+            playerMouseLook.enabled = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            dialoguePanel.SetActive(false);
+        }
+    }
+
     public void SetUp()
     {
         dialogueText.text = characterNpcName + ": " + currentDialogue[index];

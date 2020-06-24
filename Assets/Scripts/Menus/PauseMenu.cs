@@ -6,7 +6,7 @@ public class PauseMenu : MonoBehaviour
 {
     public static bool isPaused;
     public GameObject pauseMenu, optionsMenu;
-    void Paused()
+    void Pause()
     {
         //Pause everything
         isPaused = true;
@@ -19,7 +19,7 @@ public class PauseMenu : MonoBehaviour
         //show the cursor
         Cursor.visible = true;
     }
-    public void UnPaused()
+    public void UnPause()
     {
         //UnPause everything
         isPaused = false;
@@ -34,22 +34,22 @@ public class PauseMenu : MonoBehaviour
     }
     private void Start()
     {
-        UnPaused();
+        UnPause();
     }
     void TogglePause()
     {
         if (!isPaused)
         {
-            Paused();
+            Pause();
         }
         else
         {
-            UnPaused();
+            UnPause();
         }
     }
     private void Update()
     {
-        if (Input.GetButtonDown("Cancel"))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             //if the Options Panel is not on
             if (!optionsMenu.activeSelf)

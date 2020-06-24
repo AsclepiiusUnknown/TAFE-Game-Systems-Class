@@ -51,7 +51,10 @@ public class PlayerHandler : Character
         {
             if (controller.isGrounded)
             {
-                /*#region Bind Movement Checks
+                #region Bind Movement Checks
+                moveDirection.z = 0;
+                moveDirection.x = 0;
+                moveDirection.y = 0;
                 if (Input.GetKey(KeyBindManager.keys["Forward"]))
                 {
                     moveDirection.z++;
@@ -68,22 +71,22 @@ public class PlayerHandler : Character
                 {
                     moveDirection.x++;
                 }
-                #endregion*/
-                moveDirection = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
+                #endregion
+                //moveDirection = transform.TransformDirection(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")));
 
-                if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+                if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
                     moveDirection *= sprint;
-                else if (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.LeftControl))
+                else if (Input.GetKey(KeyCode.C) || Input.GetKey(KeyCode.LeftControl))
                     moveDirection *= crouch;
                 else
                     moveDirection *= speed;
 
-                /*if (Input.GetButton("Jump"))
+                if (Input.GetButton("Jump"))
                 {
                     moveDirection.y = jumpSpeed;
-                }*/
+                }
             }
-            //moveDirection.y -= gravity * Time.deltaTime;
+            moveDirection.y -= gravity * Time.deltaTime;
             controller.Move(moveDirection * Time.deltaTime);
         }
     }
