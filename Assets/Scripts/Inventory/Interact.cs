@@ -106,7 +106,10 @@ public class Interact : MonoBehaviour
                         LinearInventory.currentChest = chest;
                         playerInv.ToggleInv();
                         if (LinearInventory.currentChest != null)
-                            LinearInventory.currentChest.UpdateChestSlots();
+                        {
+                            chest.showChestInv = true;
+                            LinearInventory.currentChest.RefreshChest();
+                        }
                     }
                 }
             }

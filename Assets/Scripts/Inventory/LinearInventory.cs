@@ -27,6 +27,7 @@ public class LinearInventory : MonoBehaviour
     public static bool showInv;
     public Texture2D mysterySprite;
     public ItemType filterType;
+    public bool showAll;
     #endregion
 
     #region EQUIPMENT
@@ -41,13 +42,14 @@ public class LinearInventory : MonoBehaviour
 
     #region SHOP
     [Header("Shop")]
+    public Text moneyUI;
+    public int startingMoney = 50;
     public static Shop currentShop;
     public static int money;
     #endregion
 
     #region SORTING
     [Header("Sorting")]
-    //public string sortType = "";
     public string[] enumTypesForItems;
     #endregion
 
@@ -63,6 +65,9 @@ public class LinearInventory : MonoBehaviour
     void Start()
     {
         #region Setup
+        LinearInventory.money += startingMoney;
+        moneyUI.text = "MONEY: $" + LinearInventory.money;
+
         player = this.gameObject.GetComponent<PlayerHandler>();
         enumTypesForItems = new string[] { "Food", "Weapon", "Apparel", "Crafting", "Ingredients", "Potions", "Scrolls", "Quest", "Money" };
         #endregion
@@ -169,6 +174,7 @@ public class LinearInventory : MonoBehaviour
             {
                 if (type == "All")
                 {
+                    showAll = true;
                     //enable the slot
                     invSlots[i].slot.gameObject.SetActive(true);
                     // display the name
@@ -176,6 +182,8 @@ public class LinearInventory : MonoBehaviour
                 }
                 else
                 {
+                    showAll = false;
+
                     filterType = (ItemType)System.Enum.Parse(typeof(ItemType), type);
 
                     if (inv[i].Type == filterType)
@@ -205,6 +213,16 @@ public class LinearInventory : MonoBehaviour
             }
         }
         #endregion
+
+        if (currentChest != null)
+        {
+            currentChest.RefreshChest();
+        }
+
+        if (currentShop != null)
+        {
+            currentShop.RefreshShop();
+        }
     }
 
     public void ToggleInvSelection(bool open)
@@ -234,7 +252,7 @@ public class LinearInventory : MonoBehaviour
             #region Button Enabling
             // * //
             #region Use Item Btn
-            if (selectedItem.Type == ItemType.Crafting || selectedItem.Type == ItemType.Ingredients || selectedItem.Type == ItemType.Scrolls || selectedItem.Type == ItemType.Quest || selectedItem.Type == ItemType.Money)
+            if ((selectedItem.Type == ItemType.Crafting || selectedItem.Type == ItemType.Ingredients || selectedItem.Type == ItemType.Scrolls || selectedItem.Type == ItemType.Quest || selectedItem.Type == ItemType.Money) || currentShop == null)
             {
                 invSelection.useItemBtn.gameObject.SetActive(false);
             }
@@ -261,7 +279,11 @@ public class LinearInventory : MonoBehaviour
             #region Use Btn Text Element
             if (invSelection.useItemText != null)
             {
-                if (selectedItem.Type == ItemType.Food)
+                if (currentShop != null)
+                {
+                    invSelection.useItemText.text = "Sell";
+                }
+                else if (selectedItem.Type == ItemType.Food)
                 {
                     invSelection.useItemText.text = "Eat";
                 }
@@ -304,12 +326,94 @@ public class LinearInventory : MonoBehaviour
     #region Button Functions
     public void UseItem()
     {
-        switch (selectedItem.Type)
+        if (currentShop != null)
         {
-            #region FOOD
-            case ItemType.Food:
-                if (player.attributes[0].currentValue < player.attributes[0].maxValue)
+            for (int i = 0; i < equipmentSlots.Length; i++)
+            {
+                if (equipmentSlots[i].currentItem != null && selectedItem.Name == equipmentSlots[i].currentItem.name)
                 {
+                    Destroy(equipmentSlots[i].currentItem);
+                }
+            }
+
+            money += selectedItem.Value;
+            moneyUI.text = "MONEY: $" + LinearInventory.money;
+
+            currentShop.shopInv.Add(selectedItem);
+            if (selectedItem.Amount > 1)
+            {
+                selectedItem.Amount--;
+            }
+            else
+            {
+                inv.Remove(selectedItem);
+                selectedItem = null;
+            }
+        }
+        else
+        {
+            switch (selectedItem.Type)
+            {
+                #region FOOD
+                case ItemType.Food:
+                    if (player.attributes[0].currentValue < player.attributes[0].maxValue)
+                    {
+                        if (selectedItem.Amount > 1)
+                        {
+                            selectedItem.Amount--;
+                        }
+                        else
+                        {
+                            inv.Remove(selectedItem);
+                            selectedItem = null;
+                        }
+                        player.attributes[0].currentValue += selectedItem.Heal;
+                    }
+                    break;
+                #endregion
+
+                #region WEAPON
+                case ItemType.Weapon:
+                    if (equipmentSlots[2].currentItem == null || selectedItem.Name != equipmentSlots[2].currentItem.name)
+                    {
+                        //IF we have something equipped 
+                        if (equipmentSlots[2].currentItem != null)
+                        {
+                            Destroy(equipmentSlots[2].currentItem);
+                        }
+                        GameObject currentItem = Instantiate(selectedItem.Mesh, equipmentSlots[3].equipLocation);
+                        equipmentSlots[2].currentItem = currentItem;
+                        currentItem.name = selectedItem.Name;
+                    }
+                    else
+                    {
+                        Destroy(equipmentSlots[2].currentItem);
+                    }
+                    break;
+                #endregion
+
+                #region APPAREL
+                case ItemType.Apparel:
+                    if (equipmentSlots[2].currentItem == null || selectedItem.Name != equipmentSlots[2].currentItem.name)
+                    {
+                        //IF we have something equipped 
+                        if (equipmentSlots[2].currentItem != null)
+                        {
+                            Destroy(equipmentSlots[2].currentItem);
+                        }
+                        GameObject currentItem = Instantiate(selectedItem.Mesh, equipmentSlots[3].equipLocation);
+                        equipmentSlots[2].currentItem = currentItem;
+                        currentItem.name = selectedItem.Name;
+                    }
+                    else
+                    {
+                        Destroy(equipmentSlots[2].currentItem);
+                    }
+                    break;
+                #endregion
+
+                #region POTIONS
+                case ItemType.Potions:
                     if (selectedItem.Amount > 1)
                     {
                         selectedItem.Amount--;
@@ -318,73 +422,15 @@ public class LinearInventory : MonoBehaviour
                     {
                         inv.Remove(selectedItem);
                         selectedItem = null;
-                        return;
                     }
                     player.attributes[0].currentValue += selectedItem.Heal;
-                }
-                break;
-            #endregion
+                    break;
+                #endregion
 
-            #region WEAPON
-            case ItemType.Weapon:
-                if (equipmentSlots[2].currentItem == null || selectedItem.Name != equipmentSlots[2].currentItem.name)
-                {
-                    //IF we have something equipped 
-                    if (equipmentSlots[2].currentItem != null)
-                    {
-                        Destroy(equipmentSlots[2].currentItem);
-                    }
-                    GameObject currentItem = Instantiate(selectedItem.Mesh, equipmentSlots[3].equipLocation);
-                    equipmentSlots[2].currentItem = currentItem;
-                    currentItem.name = selectedItem.Name;
-                }
-                else
-                {
-                    Destroy(equipmentSlots[2].currentItem);
-                }
-                break;
-            #endregion
-
-            #region APPAREL
-            case ItemType.Apparel:
-                if (equipmentSlots[2].currentItem == null || selectedItem.Name != equipmentSlots[2].currentItem.name)
-                {
-                    //IF we have something equipped 
-                    if (equipmentSlots[2].currentItem != null)
-                    {
-                        Destroy(equipmentSlots[2].currentItem);
-                    }
-                    GameObject currentItem = Instantiate(selectedItem.Mesh, equipmentSlots[3].equipLocation);
-                    equipmentSlots[2].currentItem = currentItem;
-                    currentItem.name = selectedItem.Name;
-                }
-                else
-                {
-                    Destroy(equipmentSlots[2].currentItem);
-                }
-                break;
-            #endregion
-
-            #region POTIONS
-            case ItemType.Potions:
-                if (selectedItem.Amount > 1)
-                {
-                    selectedItem.Amount--;
-                }
-                else
-                {
-                    inv.Remove(selectedItem);
-                    selectedItem = null;
-                    return;
-                }
-                player.attributes[0].currentValue += selectedItem.Heal;
-                break;
-            #endregion
-
-            default:
-                break;
+                default:
+                    break;
+            }
         }
-
         RefreshInv("All");
     }
 
@@ -406,7 +452,6 @@ public class LinearInventory : MonoBehaviour
         {
             inv.Remove(selectedItem);
             selectedItem = null;
-            return;
         }
 
         RefreshInv("All");
@@ -439,7 +484,6 @@ public class LinearInventory : MonoBehaviour
         {
             inv.Remove(selectedItem);
             selectedItem = null;
-            return;
         }
 
         RefreshInv("All");
@@ -448,38 +492,16 @@ public class LinearInventory : MonoBehaviour
     public void TakeItem()
     {
         //add to player inv
-        inv.Add(ItemData.CreateItem(selectedItem.ID));
+        print(selectedItem);
+        inv.Add(ItemData.CreateItem(currentChest.selectedItem.ID));
         //remove from chest
-        currentChest.chestInv.Remove(selectedItem);
-        selectedItem = null;
+        currentChest.chestInv.Remove(currentChest.selectedItem);
+        currentChest.selectedItem = null;
 
         bool isNotNull = (currentChest.selectedItem != null) ? true : false;
         currentChest.ToggleChestSelection(isNotNull);
 
         RefreshInv("All");
-    }
-
-    public void SellItem()
-    {
-        for (int i = 0; i < equipmentSlots.Length; i++)
-        {
-            if (equipmentSlots[i].currentItem != null && selectedItem.Name == equipmentSlots[i].currentItem.name)
-            {
-                Destroy(equipmentSlots[i].currentItem);
-            }
-        }
-        money += selectedItem.Value;
-        currentShop.shopInv.Add(selectedItem);
-        if (selectedItem.Amount > 1)
-        {
-            selectedItem.Amount--;
-        }
-        else
-        {
-            inv.Remove(selectedItem);
-            selectedItem = null;
-            return;
-        }
     }
     #endregion
 

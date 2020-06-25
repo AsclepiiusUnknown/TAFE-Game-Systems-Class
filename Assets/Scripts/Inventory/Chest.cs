@@ -9,6 +9,7 @@ public class Chest : MonoBehaviour
     public Item selectedItem;
     public bool showChestInv;
     public Vector2 scr;
+    public LinearInventory playerInv;
 
     public static bool showChest;
     public Slots[] chestSlots;
@@ -66,7 +67,7 @@ public class Chest : MonoBehaviour
             #endregion
 
             #region Take Item Btn
-            if (selectedItem != null)
+            if (selectedItem != null && LinearInventory.inv.Count < playerInv.invSlots.Length)
             {
                 chestSelection.takeItemBtn.gameObject.SetActive(true);
             }
@@ -99,14 +100,9 @@ public class Chest : MonoBehaviour
         ToggleChestSelection(true);
     }
 
-    public void TakeBtn()
+    public void RefreshChest()
     {
-        UpdateChestSlots();
-    }
-
-    public void UpdateChestSlots()
-    {
-        #region Inventory Slots
+        #region Chest Slots
         for (int i = 0; i < chestSlots.Length; i++)
         {
             if (i < chestInv.Count && chestInv[i] != null)

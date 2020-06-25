@@ -27,7 +27,7 @@ public static class ItemData
             case 0:
                 _name = "Apple";
                 _description = "Munchies & Crunchies";
-                _value = 1;
+                _value = 5;
                 _amount = 1;
                 _icon = "Food/Apple";
                 _mesh = "Food/Apple";

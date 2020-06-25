@@ -42,6 +42,8 @@ public class QuestGiver : MonoBehaviour
         {
             player.currentExp += quest.experienceReward;
             LinearInventory.money += quest.goldReward;
+            inventory.moneyUI.text = "MONEY: $" + LinearInventory.money;
+
             quest.goal.questState = QuestState.Claimed;
             Debug.Log("You got " + quest.experienceReward + " EXP points and $" + quest.goldReward);
         }
