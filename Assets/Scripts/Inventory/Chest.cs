@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Chest : MonoBehaviour
 {
@@ -9,48 +10,124 @@ public class Chest : MonoBehaviour
     public bool showChestInv;
     public Vector2 scr;
 
+    public static bool showChest;
+    public Slots[] chestSlots;
+    public GameObject chestContainer;
+    //*CHEST SELECTION//
+    [System.Serializable]
+    public struct ChestSelection
+    {
+        //The general selection parts
+        public Selection selection;
+
+        //Buttons for en/disabling
+        public Button takeItemBtn;
+    }
+    public ChestSelection chestSelection;
+
+
     void Start()
     {
         chestInv.Add(ItemData.CreateItem(Random.Range(0, 2)));
         chestInv.Add(ItemData.CreateItem(Random.Range(100, 102)));
+
+        for (int i = 0; i < chestSlots.Length; i++)
+        {
+            if (chestSlots[i].slot.GetComponentInChildren<Text>() != null)
+            {
+                chestSlots[i].slotName = chestSlots[i].slot.GetComponentInChildren<Text>();
+            }
+        }
     }
 
-    private void OnGUI()
+    private void Update()
     {
-        scr.x = Screen.width / 16;
-        scr.y = Screen.height / 9;
 
+    }
+
+    public void ToggleChest()
+    {
+        #region Show/Hide Chest Items
         if (showChestInv)
         {
-            //Display chest items
-            for (int i = 0; i < chestInv.Count; i++)
-            {
-                if (GUI.Button(new Rect(12.5f * scr.x, (0.25f * scr.y) + i * (0.25f * scr.y), 3 * scr.x, .25f * scr.y), chestInv[i].Name))
-                {
-                    selectedItem = chestInv[i];
-                }
-            }
+            chestContainer.SetActive(true);
 
+            ToggleChestSelection(false);
+        }
+        else
+        {
+            chestContainer.SetActive(false);
+
+            ToggleChestSelection(false);
+        }
+        #endregion
+
+        #region Chest Slots
+        for (int i = 0; i < chestSlots.Length; i++)
+        {
+            if (i < chestInv.Count && chestInv[i] != null)
+            {
+                //enable the slot
+                chestSlots[i].slot.gameObject.SetActive(true);
+                // display the name
+                chestSlots[i].slotName.text = chestInv[i].Name + " : " + chestInv[i].Amount;
+            }
+            else
+            {
+                //disable the slot
+                chestSlots[i].slot.gameObject.SetActive(false);
+                // set the name to nothing
+                chestSlots[i].slotName.text = "";
+            }
+        }
+        #endregion
+    }
+
+    public void ToggleChestSelection(bool open)
+    {
+        Selection selected = chestSelection.selection;
+
+        if (selectedItem != null && open)
+        {
+            selected.selectionContainer.SetActive(true);
+
+            selected.selectionIcon = selectedItem.Icon;
+            selected.selectionName.text = selectedItem.Name;
+            #region Description
+            selected.selectionDescription.text =
+            "Description: " + selectedItem.Description +
+            "\n Amount: " + selectedItem.Amount +
+            "\n Value: " + selectedItem.Value +
+            "\n Damage: " + selectedItem.Damage +
+            "\n Heal: " + selectedItem.Heal +
+            "\n Armour: " + selectedItem.Armour;
+            #endregion
+
+            #region Take Item Btn
             if (selectedItem != null)
             {
-                GUI.Box(new Rect(8.5f * scr.x, 0.25f * scr.y, 3.5f * scr.x, 7 * scr.y), "");
-                //GUI.Box(new Rect(8.75f * scr.x, 0.5f * scr.y, 3 * scr.x, 3 * scr.y), selectedItem.Icon);
-                GUI.Box(new Rect(9.05f * scr.x, 3.5f * scr.y, 2.5f * scr.x, .5f * scr.y), selectedItem.Name);
-                GUI.Box(new Rect(8.75f * scr.x, 4 * scr.y, 3 * scr.x, 3 * scr.y), selectedItem.Description + "\nValue: " + selectedItem.Value + "\nAmount: " + selectedItem.Amount);
-
-                if (GUI.Button(new Rect(10.5f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Take Item"))
-                {
-                    //Add to player
-                    LinearInventory.inv.Add(ItemData.CreateItem(selectedItem.ID));
-                    //Remove from chest
-                    chestInv.Remove(selectedItem);
-
-                    selectedItem = null;
-                    return;
-                }
+                chestSelection.takeItemBtn.gameObject.SetActive(true);
             }
+            else
+            {
+                chestSelection.takeItemBtn.gameObject.SetActive(false);
+            }
+            #endregion
+        }
+        else
+        {
+            selected.selectionContainer.SetActive(false);
 
-            //display items in players inv
+            #region Selection Handling
+            if (selectedItem != null)
+            {
+                selected.selectionIcon = null;
+                selected.selectionName.text = "";
+                selected.selectionDescription.text = "";
+
+                chestSelection.takeItemBtn.gameObject.SetActive(false);
+            }
+            #endregion
         }
     }
 }

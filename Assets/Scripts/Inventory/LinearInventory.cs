@@ -6,95 +6,64 @@ using UnityEngine.UI;
 public class LinearInventory : MonoBehaviour
 {
     #region Variables
-    public PlayerHandler player;
-    public static List<Item> inv = new List<Item>();
-    public Item selectedItem;
-    public static bool showInv;
-    public GUIStyle[] Styles;
-
-    public Vector2 scr;
-    public Vector2 scrollPos;
-    public string sortType = "";
-    public string[] enumTypesForItems;
-    public static int money;
-
-    public Transform dropLocation;
-
-    [System.Serializable]
-    public struct Equipment
-    {
-        public string slotName;
-        public Transform equipLocation;
-        public GameObject currentItem;
-    };
-
-    public Equipment[] equipmentSlots;
-
-    public static Chest currentChest;
-    public static Shop currentShop;
-
+    // * //
     #region SLOTS
-    [System.Serializable]
-    public struct Slots
-    {
-        public Button slot;
-        public Text slotName;
-        public Item slotItem;
-    }
     [Header("Slots")]
     public Slots[] invSlots;
-    public Slots[] chestSlots;
     #endregion
 
     #region SELECTION
-    //*ITEM SELECTION//
-    [System.Serializable]
-    public struct Selection
-    {
-        public Image selectionIcon;
-        public Text selectionName;
-        public Text selectionDescription;
-    }
-
-    //*INV SELECTION//
-    [System.Serializable]
-    public struct InvSelection
-    {
-        //The general selection parts
-        public Selection selection;
-
-        //Buttons for en/disabling
-        public Button useItemBtn;
-        public Button discardItemBtn;
-        public Button moveItemBtn;
-
-        //Button text to change depending on item type
-        public Text useItemText;
-    }
-
-    //*CHEST SELECTION//
-    [System.Serializable]
-    public struct ChestSelection
-    {
-        //The general selection parts
-        public Selection selection;
-
-        //Buttons for en/disabling
-        public Button takeItemBtn;
-    }
-
     [Header("Selection")]
     public InvSelection invSelection;
-    public ChestSelection chestSelection;
     public GameObject InvContainer;
     #endregion
+
+    #region ITEMS
+    [Header("Items")]
+    public static List<Item> inv = new List<Item>();
+    public Item selectedItem;
+    public static bool showInv;
     #endregion
+
+    #region EQUIPMENT
+    [Header("Equipment")]
+    public Equipment[] equipmentSlots;
+    #endregion
+
+    #region CHEST
+    [Header("Chest")]
+    public static Chest currentChest;
+    #endregion
+
+    #region SHOP
+    [Header("Shop")]
+    public static Shop currentShop;
+    public static int money;
+    #endregion
+
+    #region SORTING
+    [Header("Sorting")]
+    public string sortType = "";
+    public string[] enumTypesForItems;
+    #endregion
+
+    #region MISC.
+    [Header("Misc.")]
+    public GameObject invBacking;
+    public PlayerHandler player;
+    public Transform dropLocation;
+    #endregion
+    #endregion
+
 
     void Start()
     {
+        #region Setup
         player = this.gameObject.GetComponent<PlayerHandler>();
         enumTypesForItems = new string[] { "Food", "Weapon", "Apparel", "Crafting", "Ingredients", "Potions", "Scrolls", "Quest", "Money" };
+        #endregion
 
+        #region Random Starting Items
         int a = Random.Range(1, 3);
         for (int i = 0; i < a; i++)
         {
@@ -106,194 +75,41 @@ public class LinearInventory : MonoBehaviour
             inv.Add(ItemData.CreateItem(Random.Range(500, 502)));
             inv.Add(ItemData.CreateItem(Random.Range(600, 602)));
         }
+        #endregion
     }
 
     void Update()
     {
-        #region Screen Dimensions
-        scr.x = Screen.width / 16;
-        scr.y = Screen.height / 9;
-        #endregion
-
         #region Inventory Toggling
         if (Input.GetKeyDown(KeyBindManager.keys["Inventory"]) && !PauseMenu.isPaused)
         {
-            showInv = !showInv;
+            ToggleInv();
         }
         #endregion
 
-        #region Show/Hide Inventory Items
-        if (showInv)
+        #region Selection Toggling
+        if (selectedItem != null && !invSelection.selection.selectionContainer.activeSelf && showInv)
         {
-            Time.timeScale = 0;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-
-            InvContainer.SetActive(true);
-
-            #region Selection Handling
-            if (selectedItem != null)
-            {
-                invSelection.selection.selectionIcon = selectedItem.Icon;
-                invSelection.selection.selectionName.text = selectedItem.Name;
-                #region Description
-                invSelection.selection.selectionDescription.text =
-                "Description: " + selectedItem.Description +
-                "\n Amount: " + selectedItem.Amount +
-                "\n Value: " + selectedItem.Value +
-                "\n Damage: " + selectedItem.Damage +
-                "\n Heal: " + selectedItem.Heal +
-                "\n Armour: " + selectedItem.Armour;
-                #endregion
-
-                #region Button Enabling
-                // * //
-                #region Use Item Btn
-                if (selectedItem.Type == ItemType.Crafting || selectedItem.Type == ItemType.Ingredients || selectedItem.Type == ItemType.Scrolls || selectedItem.Type == ItemType.Quest || selectedItem.Type == ItemType.Money)
-                {
-                    invSelection.useItemBtn.enabled = false;
-                }
-                else
-                {
-                    invSelection.useItemBtn.enabled = true;
-                }
-                #endregion
-
-                #region Move Item Btn
-                if (currentChest != null)
-                {
-                    invSelection.moveItemBtn.enabled = true;
-                }
-                else
-                {
-                    invSelection.moveItemBtn.enabled = false;
-                }
-                #endregion
-
-                invSelection.discardItemBtn.enabled = true;
-                #endregion
-
-                #region Use Btn Text Element
-                if (invSelection.useItemText != null)
-                {
-                    if (selectedItem.Type == ItemType.Food)
-                    {
-                        invSelection.useItemText.text = "Eat";
-                    }
-                    else if (selectedItem.Type == ItemType.Weapon || selectedItem.Type == ItemType.Apparel)
-                    {
-                        invSelection.useItemText.text = "Equip";
-                    }
-                    else if (selectedItem.Type == ItemType.Potions)
-                    {
-                        invSelection.useItemText.text = "Consume";
-                    }
-                    else
-                    {
-                        invSelection.useItemText.text = "Use";
-                    }
-                }
-                #endregion
-            }
-            #endregion
+            ToggleInvSelection(showInv);
         }
         else
         {
-            Time.timeScale = 1;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            if (currentChest != null)
-                currentChest.showChestInv = false;
-            currentChest = null;
-
-            InvContainer.SetActive(false);
-
-            #region Selection Handling
-            if (selectedItem != null)
-            {
-                invSelection.selection.selectionIcon = null;
-                invSelection.selection.selectionName.text = "";
-                invSelection.selection.selectionDescription.text = "";
-                invSelection.useItemBtn.enabled = false;
-                invSelection.moveItemBtn.enabled = false;
-                invSelection.discardItemBtn.enabled = false;
-                invSelection.useItemText.text = "";
-            }
-            #endregion
-        }
-
-        /**if (showInv)
-        {
-            Time.timeScale = 0;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            return;
-        }
-        else
-        {
-            Time.timeScale = 1;
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            if (currentChest != null)
-                currentChest.showChestInv = false;
-            currentChest = null;
-            return;
-        }*/
-        #endregion
-
-        #region Inventory Slots
-        for (int i = 0; i < invSlots.Length; i++)
-        {
-            //invSlots[i].slot.enabled = (inv[i] != null) ? true : false;
-            if (inv[i] != null)
-            {
-                //enable the slot
-                invSlots[i].slot.enabled = true;
-                // display the name
-                invSlots[i].slotName.text = inv[i].Name + " : " + inv[i].Amount;
-            }
-            else
-            {
-                //disable the slot
-                invSlots[i].slot.enabled = false;
-                // set the name to nothing
-                invSlots[1].slotName.text = "";
-            }
+            ToggleInvSelection(false);
         }
         #endregion
 
-        #region Chest Slots
-        if (currentChest != null)
+        #region Backing Toggling
+        if (showInv && !invBacking.activeSelf)
         {
-            for (int i = 0; i < chestSlots.Length; i++)
-            {
-                //invSlots[i].slot.enabled = (inv[i] != null) ? true : false;
-                if (currentChest.chestInv[i] != null)
-                {
-                    //enable the slot
-                    chestSlots[i].slot.enabled = true;
-                    // display the name
-                    chestSlots[i].slotName.text = currentChest.chestInv[i].Name + " : " + inv[i].Amount;
-                }
-                else
-                {
-                    //disable the slot
-                    chestSlots[i].slot.enabled = false;
-                    // set the name to nothing
-                    chestSlots[1].slotName.text = "";
-                }
-            }
+            invBacking.SetActive(true);
+        }
+        else if (currentChest != null && currentChest.showChestInv && !invBacking.activeSelf)
+        {
+            invBacking.SetActive(true);
         }
         else
         {
-            for (int i = 0; i < chestSlots.Length; i++)
-            {
-
-                //disable the slot
-                chestSlots[i].slot.enabled = false;
-                // set the name to nothing
-                chestSlots[1].slotName.text = "";
-            }
+            invBacking.SetActive(false);
         }
         #endregion
 
@@ -326,312 +142,189 @@ public class LinearInventory : MonoBehaviour
         }
     }
 
-    void Display()
+    public void ToggleInv()
     {
-        //IF we want to display everything in our inventory
-        if (sortType == "All" || sortType == "")
+        showInv = !showInv;
+
+
+        #region Show/Hide Inventory Items
+        if (showInv)
         {
-            //if we have max amount or less (space at top and bottom)
-            if (inv.Count <= 34)
-            {
-                for (int i = 0; i < inv.Count; i++)
-                {
-                    if (GUI.Button(new Rect(0.5f * scr.x, 0.25f * scr.y + i * (0.25f * scr.y), 3 * scr.x, 0.25f * scr.y), inv[i].Name))
-                    {
-                        selectedItem = inv[i];
-                    }
-                }
-            }
-            //More than max amount
-            else
-            {
-                scrollPos = GUI.BeginScrollView(new Rect(0, 0.25f * scr.y, 3.75f * scr.x, 8.5f * scr.y), scrollPos, new Rect(0, 0, 0, inv.Count * .25f * scr.y), false, true);
+            Time.timeScale = 0;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
 
-                #region Scroll Content
-                for (int i = 0; i < inv.Count; i++)
-                {
-                    if (GUI.Button(new Rect(.5f * scr.x, i * (.25f * scr.y), 3 * scr.x, .25f * scr.y), inv[i].Name))
-                    {
-                        selectedItem = inv[i];
-                    }
-                }
-                #endregion
+            InvContainer.SetActive(true);
 
-                GUI.EndScrollView();
-            }
+            ToggleInvSelection(false);
         }
-        //if we are displaying off a type or category
         else
         {
-            ItemType type = (ItemType)System.Enum.Parse(typeof(ItemType), sortType);
+            Time.timeScale = 1;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            if (currentChest != null)
+                currentChest.showChestInv = false;
+            currentChest = null;
 
-            //Amount of that type
-            int a = 0;
-            //Slot position
-            int s = 0;
-
-            for (int i = 0; i < inv.Count; i++)
-            {
-                if (inv[i].Type == type)
-                {
-                    a++; //Increase count of that type
-                }
-            }
-            if (a <= 34)//Within max
-            {
-                for (int i = 0; i < inv.Count; i++)
-                {
-                    if (inv[i].Type == type)
-                    {
-                        if (GUI.Button(new Rect(0.5f * scr.x, 0.25f * scr.y + s * (0.25f * scr.y), 3 * scr.x, 0.25f * scr.y), inv[i].Name))
-                        {
-                            selectedItem = inv[i];
-                        }
-                        s++;
-                    }
-                }
-            }
-            else //larger than max
-            {
-                scrollPos = GUI.BeginScrollView(new Rect(0, 0.25f * scr.y, 3.75f * scr.x, 8.5f * scr.y), scrollPos, new Rect(0, 0, 0, a * .25f * scr.y), false, true);
-
-                #region Scroll Content
-                for (int i = 0; i < inv.Count; i++)
-                {
-                    if (inv[i].Type == type)
-                    {
-                        if (GUI.Button(new Rect(.5f * scr.x, s * (.25f * scr.y), 3 * scr.x, .25f * scr.y), inv[i].Name))
-                        {
-                            selectedItem = inv[i];
-                        }
-                        s++;
-                    }
-                }
-                #endregion
-
-                GUI.EndScrollView();
-            }
-        }
-    }
-
-    void UseItem()
-    {
-        //GUI.Box(new Rect(4.25f * scr.x, 0.5f * scr.y, 3 * scr.x, 3 * scr.y), selectedItem.Icon, Styles[0]);
-        GUI.Box(new Rect(4.55f * scr.x, 3.5f * scr.y, 2.5f * scr.x, .5f * scr.y), selectedItem.Name);
-        GUI.Box(new Rect(4.25f * scr.x, 4 * scr.y, 3 * scr.x, 3 * scr.y), selectedItem.Description + "\nValue: " + selectedItem.Value + "\nAmount: " + selectedItem.Amount, Styles[3]);
-        GUI.Box(new Rect(4 * scr.x, 0.25f * scr.y, 3.5f * scr.x, 7 * scr.y), "", Styles[1]);
+            InvContainer.SetActive(false);
 
 
-        string armourTemptext = "", healTemptext = "", damageTemptext = "";
-
-        #region Extra Checks
-        if (selectedItem.Armour > 0)
-        {
-            armourTemptext = "\nArmour: " + selectedItem.Armour;
-        }
-        if (selectedItem.Heal > 0)
-        {
-            healTemptext = "\nHeal: " + selectedItem.Heal;
-        }
-        if (selectedItem.Damage > 0)
-        {
-            damageTemptext = "\nDamage: " + selectedItem.Damage;
         }
         #endregion
 
-        switch (selectedItem.Type)
+        #region Inventory Slots
+        for (int i = 0; i < invSlots.Length; i++)
         {
-            case ItemType.Food:
-                if (player.attributes[0].currentValue < player.attributes[0].maxValue)
-                {
-                    if (GUI.Button(new Rect(4.5f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Eat"))
-                    {
-                        //player.attributes[0].currentValue = mathf
-                        if (selectedItem.Amount > 1)
-                        {
-                            selectedItem.Amount--;
-                        }
-                        else
-                        {
-                            inv.Remove(selectedItem);
-                            selectedItem = null;
-                            return;
-                        }
-                        player.attributes[0].currentValue += selectedItem.Heal;
-                    }
-                }
-
-                break;
-            case ItemType.Weapon:
-                if (equipmentSlots[2].currentItem == null || selectedItem.Name != equipmentSlots[2].currentItem.name)
-                {
-                    if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Equip"))
-                    {
-                        //IF we have something equipped 
-                        if (equipmentSlots[2].currentItem != null)
-                        {
-                            Destroy(equipmentSlots[2].currentItem);
-                        }
-                        GameObject currentItem = Instantiate(selectedItem.Mesh, equipmentSlots[3].equipLocation);
-                        equipmentSlots[2].currentItem = currentItem;
-                        currentItem.name = selectedItem.Name;
-                    }
-                }
-                else
-                {
-                    if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Unequip"))
-                    {
-                        Destroy(equipmentSlots[2].currentItem);
-                    }
-                }
-
-                break;
-            case ItemType.Apparel:
-                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Equip"))
-                {
-
-                }
-                break;
-            case ItemType.Crafting:
-                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Craft"))
-                {
-
-                }
-                break;
-            case ItemType.Ingredients:
-                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Create"))
-                {
-
-                }
-                break;
-            case ItemType.Potions:
-                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Consume"))
-                {
-
-                }
-                break;
-            case ItemType.Scrolls:
-                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Use"))
-                {
-
-                }
-                break;
-            case ItemType.Quest:
-                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Accept"))
-                {
-
-                }
-                break;
-            case ItemType.Money:
-                if (GUI.Button(new Rect(4.75f * scr.x, 6.5f * scr.y, scr.x, 0.25f * scr.y), "Equip"))
-                {
-
-                }
-                break;
-            default:
-                break;
-        }
-
-        if (GUI.Button(new Rect(5.25f * scr.x, 6.75f * scr.y, scr.x, 0.25f * scr.y), "Discard"))
-        {
-            for (int i = 0; i < equipmentSlots.Length; i++)
+            if (i < inv.Count && inv[i] != null)
             {
-                //Check Slots
-                if (equipmentSlots[i].currentItem != null && selectedItem.Name == equipmentSlots[i].currentItem.name)
-                {
-                    //Destroy the one in our equiptment
-                    Destroy(equipmentSlots[i].currentItem);
-                }
-            }
-
-            //Spawn the item
-            GameObject droppedItem = Instantiate(selectedItem.Mesh, dropLocation.position, Quaternion.identity);
-            droppedItem.name = selectedItem.Name;
-            droppedItem.AddComponent<Rigidbody>().useGravity = true;
-            droppedItem.GetComponent<ItemHandler>().enabled = true;
-
-            if (selectedItem.Amount > 1)
-            {
-                Debug.Log(selectedItem.Amount.ToString());
-                selectedItem.Amount--;
+                //enable the slot
+                invSlots[i].slot.gameObject.SetActive(true);
+                // display the name
+                invSlots[i].slotName.text = inv[i].Name + " : " + inv[i].Amount;
             }
             else
             {
-                inv.Remove(selectedItem);
-                selectedItem = null;
-                return;
+                //disable the slot
+                invSlots[i].slot.gameObject.SetActive(false);
+                // set the name to nothing
+                invSlots[i].slotName.text = "";
             }
+            #endregion
         }
-
-        if (currentChest != null)
-        {
-            if (GUI.Button(new Rect(5.75f * scr.x, 6.5f * scr.y, scr.x, .25f * scr.y), "Move Item"))
-            {
-                for (int i = 0; i < equipmentSlots.Length; i++)
-                {
-                    if (equipmentSlots[i].currentItem != null && selectedItem.Name == equipmentSlots[i].currentItem.name)
-                    {
-                        Destroy(equipmentSlots[i].currentItem);
-                    }
-                }
-                currentChest.chestInv.Add(selectedItem);
-                if (selectedItem.Amount > 1)
-                {
-                    selectedItem.Amount--;
-                }
-                else
-                {
-                    inv.Remove(selectedItem);
-                    selectedItem = null;
-                    return;
-                }
-            }
-        }
-        if (currentShop != null)
-        {
-            if (GUI.Button(new Rect(5.75f * scr.x, 6.5f * scr.y, scr.x, .25f * scr.y), "Sell Item"))
-            {
-                for (int i = 0; i < equipmentSlots.Length; i++)
-                {
-                    if (equipmentSlots[i].currentItem != null && selectedItem.Name == equipmentSlots[i].currentItem.name)
-                    {
-                        Destroy(equipmentSlots[i].currentItem);
-                    }
-                }
-                money += selectedItem.Value;
-                currentShop.shopInv.Add(selectedItem);
-                if (selectedItem.Amount > 1)
-                {
-                    selectedItem.Amount--;
-                }
-                else
-                {
-                    inv.Remove(selectedItem);
-                    selectedItem = null;
-                    return;
-                }
-            }
-        }
-        GUI.skin = null;
     }
 
-    /**private void OnGUI()
+    public void ToggleInvSelection(bool open)
     {
-        if (showInv)
+        Selection selected = invSelection.selection;
+
+        if (selectedItem != null && open)
         {
-            GUI.Box(new Rect(0, 0, Screen.width, Screen.height), "");
-            for (int i = 0; i < enumTypesForItems.Length; i++)
+            selected.selectionContainer.SetActive(true);
+
+            selected.selectionIcon = selectedItem.Icon;
+            selected.selectionName.text = selectedItem.Name;
+            #region Description
+            selected.selectionDescription.text =
+            "Description: " + selectedItem.Description +
+            "\n Amount: " + selectedItem.Amount +
+            "\n Value: " + selectedItem.Value +
+            "\n Damage: " + selectedItem.Damage +
+            "\n Heal: " + selectedItem.Heal +
+            "\n Armour: " + selectedItem.Armour;
+            #endregion
+
+            #region Button Enabling
+            // * //
+            #region Use Item Btn
+            if (selectedItem.Type == ItemType.Crafting || selectedItem.Type == ItemType.Ingredients || selectedItem.Type == ItemType.Scrolls || selectedItem.Type == ItemType.Quest || selectedItem.Type == ItemType.Money)
             {
-                if (GUI.Button(new Rect(4 * scr.x + i * scr.x, 0, scr.x, 0.25f * scr.y), enumTypesForItems[i]))
+                invSelection.useItemBtn.gameObject.SetActive(false);
+            }
+            else
+            {
+                invSelection.useItemBtn.gameObject.SetActive(true);
+            }
+            #endregion
+
+            #region Move Item Btn
+            if (currentChest != null)
+            {
+                invSelection.moveItemBtn.gameObject.SetActive(true);
+            }
+            else
+            {
+                invSelection.moveItemBtn.gameObject.SetActive(false);
+            }
+            #endregion
+
+            invSelection.discardItemBtn.enabled = true;
+            #endregion
+
+            #region Use Btn Text Element
+            if (invSelection.useItemText != null)
+            {
+                if (selectedItem.Type == ItemType.Food)
                 {
-                    sortType = enumTypesForItems[i];
+                    invSelection.useItemText.text = "Eat";
+                }
+                else if (selectedItem.Type == ItemType.Weapon || selectedItem.Type == ItemType.Apparel)
+                {
+                    invSelection.useItemText.text = "Equip";
+                }
+                else if (selectedItem.Type == ItemType.Potions)
+                {
+                    invSelection.useItemText.text = "Consume";
+                }
+                else
+                {
+                    invSelection.useItemText.text = "Use";
                 }
             }
-            Display();
+            #endregion
+        }
+        else
+        {
+            selected.selectionContainer.SetActive(false);
+
+            #region Selection Handling
             if (selectedItem != null)
             {
-                UseItem();
+                selected.selectionIcon = null;
+                selected.selectionName.text = "";
+                selected.selectionDescription.text = "";
+
+                invSelection.useItemBtn.gameObject.SetActive(false);
+                invSelection.moveItemBtn.gameObject.SetActive(false);
+                invSelection.discardItemBtn.gameObject.SetActive(false);
+                invSelection.useItemText.text = "";
             }
+            #endregion
         }
-    }*/
+    }
+}
+
+//*SLOTS//
+[System.Serializable]
+public struct Slots
+{
+    public Button slot;
+    public Text slotName;
+    public Item slotItem;
+}
+
+//*ITEM SELECTION//
+[System.Serializable]
+public struct Selection
+{
+    public GameObject selectionContainer;
+
+    public Image selectionIcon;
+    public Text selectionName;
+    public Text selectionDescription;
+}
+
+//*INV SELECTION//
+[System.Serializable]
+public struct InvSelection
+{
+    //The general selection parts
+    public Selection selection;
+
+    //Buttons for en/disabling
+    public Button useItemBtn;
+    public Button discardItemBtn;
+    public Button moveItemBtn;
+
+    //Button text to change depending on item type
+    public Text useItemText;
+}
+
+//*EQUIPMENT//
+[System.Serializable]
+public struct Equipment
+{
+    public string slotName;
+    public Transform equipLocation;
+    public GameObject currentItem;
 }

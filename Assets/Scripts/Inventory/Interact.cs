@@ -103,7 +103,7 @@ public class Interact : MonoBehaviour
 
                     if (chest != null)
                     {
-                        chest.showChestInv = true;
+                        //chest.showChestInv = true;
                         LinearInventory.showInv = true;
                         LinearInventory.currentChest = chest;
 
@@ -111,17 +111,6 @@ public class Interact : MonoBehaviour
                         Cursor.lockState = CursorLockMode.None;
                         Cursor.visible = true;
                     }
-
-                    /*if (Input.GetKeyDown(KeyCode.Escape) && chest.showChestInv == true)
-                    {
-                        chest.showChestInv = false;
-                        LinearInventory.showInv = false;
-                        LinearInventory.currentChest = null;
-
-                        Time.timeScale = 1;
-                        Cursor.lockState = CursorLockMode.Locked;
-                        Cursor.visible = false;
-                    }*/
                 }
             }
         }
