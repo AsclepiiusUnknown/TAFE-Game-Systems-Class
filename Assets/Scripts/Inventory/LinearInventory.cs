@@ -185,6 +185,14 @@ public class LinearInventory : MonoBehaviour
                         // display the name
                         invSlots[i].slotName.text = inv[i].Name + " : " + inv[i].Amount;
                     }
+                    else
+                    {
+                        //disable the slot
+                        invSlots[i].slot.gameObject.SetActive(false);
+                        // set the name to nothing
+                        invSlots[i].slotName.text = "";
+
+                    }
                 }
 
             }
@@ -376,6 +384,8 @@ public class LinearInventory : MonoBehaviour
             default:
                 break;
         }
+
+        RefreshInv("All");
     }
 
     public void MoveItem()
@@ -398,6 +408,8 @@ public class LinearInventory : MonoBehaviour
             selectedItem = null;
             return;
         }
+
+        RefreshInv("All");
     }
 
     public void DiscardItem()
@@ -429,6 +441,22 @@ public class LinearInventory : MonoBehaviour
             selectedItem = null;
             return;
         }
+
+        RefreshInv("All");
+    }
+
+    public void TakeItem()
+    {
+        //add to player inv
+        inv.Add(ItemData.CreateItem(selectedItem.ID));
+        //remove from chest
+        currentChest.chestInv.Remove(selectedItem);
+        selectedItem = null;
+
+        bool isNotNull = (currentChest.selectedItem != null) ? true : false;
+        currentChest.ToggleChestSelection(isNotNull);
+
+        RefreshInv("All");
     }
 
     public void SellItem()
