@@ -282,7 +282,7 @@ public static class ItemData
             Value = _value,
             Amount = _amount,
             Type = _type,
-            Icon = Resources.Load("Icons/" + _icon) as Image,
+            Icon = Resources.Load("Icons/" + _icon) as Texture2D,
             Mesh = Resources.Load("Mesh/" + _mesh) as GameObject,
         };
 

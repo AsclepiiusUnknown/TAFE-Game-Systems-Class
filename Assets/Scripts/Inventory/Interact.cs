@@ -10,6 +10,7 @@ public class Interact : MonoBehaviour
     public PlayerHandler player;
     public GameObject mainCamera;
     public CanvasDialogueManager dlgMaster;
+    public LinearInventory playerInv;
     #endregion
 
     #region Start
@@ -98,18 +99,14 @@ public class Interact : MonoBehaviour
 
                 if (hitInfo.collider.CompareTag("Chest"))
                 {
-                    Debug.Log("Open Chest");
                     Chest chest = hitInfo.transform.GetComponent<Chest>();
 
                     if (chest != null)
                     {
-                        //chest.showChestInv = true;
-                        LinearInventory.showInv = true;
                         LinearInventory.currentChest = chest;
-
-                        Time.timeScale = 0;
-                        Cursor.lockState = CursorLockMode.None;
-                        Cursor.visible = true;
+                        playerInv.ToggleInv();
+                        if (LinearInventory.currentChest != null)
+                            LinearInventory.currentChest.UpdateChestSlots();
                     }
                 }
             }

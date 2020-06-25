@@ -42,45 +42,7 @@ public class Chest : MonoBehaviour
 
     private void Update()
     {
-
-    }
-
-    public void ToggleChest()
-    {
-        #region Show/Hide Chest Items
-        if (showChestInv)
-        {
-            chestContainer.SetActive(true);
-
-            ToggleChestSelection(false);
-        }
-        else
-        {
-            chestContainer.SetActive(false);
-
-            ToggleChestSelection(false);
-        }
-        #endregion
-
-        #region Chest Slots
-        for (int i = 0; i < chestSlots.Length; i++)
-        {
-            if (i < chestInv.Count && chestInv[i] != null)
-            {
-                //enable the slot
-                chestSlots[i].slot.gameObject.SetActive(true);
-                // display the name
-                chestSlots[i].slotName.text = chestInv[i].Name + " : " + chestInv[i].Amount;
-            }
-            else
-            {
-                //disable the slot
-                chestSlots[i].slot.gameObject.SetActive(false);
-                // set the name to nothing
-                chestSlots[i].slotName.text = "";
-            }
-        }
-        #endregion
+        ToggleChestSelection(showChestInv);
     }
 
     public void ToggleChestSelection(bool open)
@@ -91,7 +53,7 @@ public class Chest : MonoBehaviour
         {
             selected.selectionContainer.SetActive(true);
 
-            selected.selectionIcon = selectedItem.Icon;
+            selected.selectionIcon.sprite = Sprite.Create(selectedItem.Icon, new Rect(0, 0, selectedItem.Icon.width, selectedItem.Icon.height), Vector2.zero);
             selected.selectionName.text = selectedItem.Name;
             #region Description
             selected.selectionDescription.text =
@@ -129,5 +91,39 @@ public class Chest : MonoBehaviour
             }
             #endregion
         }
+    }
+
+    public void SelectChestSlot(int slotIndex)
+    {
+        selectedItem = chestInv[slotIndex];
+        ToggleChestSelection(true);
+    }
+
+    public void TakeBtn()
+    {
+        UpdateChestSlots();
+    }
+
+    public void UpdateChestSlots()
+    {
+        #region Inventory Slots
+        for (int i = 0; i < chestSlots.Length; i++)
+        {
+            if (i < chestInv.Count && chestInv[i] != null)
+            {
+                //enable the slot
+                chestSlots[i].slot.gameObject.SetActive(true);
+                // display the name
+                chestSlots[i].slotName.text = chestInv[i].Name + " : " + chestInv[i].Amount;
+            }
+            else
+            {
+                //disable the slot
+                chestSlots[i].slot.gameObject.SetActive(false);
+                // set the name to nothing
+                chestSlots[i].slotName.text = "";
+            }
+        }
+        #endregion
     }
 }
