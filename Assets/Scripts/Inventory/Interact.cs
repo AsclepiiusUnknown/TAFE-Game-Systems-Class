@@ -39,7 +39,8 @@ public class Interact : MonoBehaviour
                     if (hitInfo.collider.GetComponent<NpcDialogueArray>())
                     {
                         NpcDialogueArray character = hitInfo.collider.GetComponent<NpcDialogueArray>();
-                        dlgMaster.characterNpcName = character.characterName;
+                        dlgMaster.currentNPC = character;
+                        dlgMaster.currentNPC.characterName = character.characterName;
                         dlgMaster.currentDialogue = character.neuDlgText;
                         dlgMaster.SetUp();
                         dlgMaster.dialoguePanel.SetActive(true);

@@ -5,11 +5,16 @@ using UnityEngine;
 public class NpcDialogueArray : MonoBehaviour
 {
     public string characterName;
+
+    //*MAKE THEM THE SAME LENGTH
+    public string[] extraPosDlgText;
+    public string[] posDlgText;
     public string[] neuDlgText;
     public string[] negDlgText;
-    public string[] posDlgText;
+    public string[] extraNegDlgText;
+    public int indexOption;
+    public int approval;
 
-    // Start is called before the first frame update
     void Start()
     {
 

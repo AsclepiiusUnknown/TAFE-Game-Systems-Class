@@ -8,16 +8,27 @@ public class CanvasDialogueManager : MonoBehaviour
     public GameObject dialoguePanel;
     public Text dialogueText;
     public Text buttonText;
+    public Button[] buttons;
+    public int byeBtnIndex;
+    string textHolder;
 
-    public string characterNpcName;
     public string[] currentDialogue;
     public int index;
     public Player.MouseLook playerMouseLook;
+
+    [Header("Quest")]
+    public Button questBtn;
+    public QuestGiver currentQuest;
+
+    [Header("From Player")]
+    public NpcDialogueArray currentNPC;
 
     // Start is called before the first frame update
     void Start()
     {
         playerMouseLook = GameObject.FindGameObjectWithTag("Player").GetComponent<Player.MouseLook>();
+
+        textHolder = buttonText.text;
     }
 
     private void Update()
@@ -33,20 +44,78 @@ public class CanvasDialogueManager : MonoBehaviour
         }
     }
 
-    public void SetUp()
+    void ApprovalDlg()
     {
-        dialogueText.text = characterNpcName + ": " + currentDialogue[index];
-        buttonText.text = "Next";
+        if (currentNPC.approval <= -2)
+        {
+            currentDialogue = currentNPC.extraNegDlgText;
+        }
+        if (currentNPC.approval == -1)
+        {
+            currentDialogue = currentNPC.negDlgText;
+        }
+        if (currentNPC.approval == 0)
+        {
+            currentDialogue = currentNPC.neuDlgText;
+        }
+        if (currentNPC.approval == 1)
+        {
+            currentDialogue = currentNPC.posDlgText;
+        }
+        if (currentNPC.approval <= 2)
+        {
+            currentDialogue = currentNPC.extraPosDlgText;
+        }
     }
 
-    public void ButtonInteraction()
+    public void SetUp()
     {
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            buttons[i].gameObject.SetActive(true);
+        }
+        buttonText.text = textHolder;
+
+        ApprovalDlg();
+        dialogueText.text = currentNPC.characterName + " : " + currentDialogue[index];
+        //buttonText.text = "Next";
+
+        if (currentQuest.quest.goal.questState == QuestState.Completed || currentQuest.quest.goal.questState == QuestState.Available)
+        {
+            questBtn.gameObject.SetActive(true);
+        }
+        else
+        {
+            questBtn.gameObject.SetActive(false);
+        }
+    }
+
+    public void ButtonInteraction(int approvalChange)
+    {
+        currentNPC.approval = Mathf.Clamp(approvalChange + currentNPC.approval, -2, 2);
+
         if (!(index >= currentDialogue.Length - 1))
         {
             index++;
             if (index >= currentDialogue.Length - 1)
             {
-                buttonText.text = "Bye.";
+                for (int i = 0; i < buttons.Length; i++)
+                {
+                    if (i != byeBtnIndex)
+                    {
+                        buttons[i].gameObject.SetActive(false);
+                    }
+                }
+
+                if (buttonText != null)
+                {
+                    buttonText.text = "Bye.";
+                }
+                else
+                {
+                    buttonText = buttons[byeBtnIndex].GetComponentInChildren<Text>();
+                    buttonText.text = "Bye.";
+                }
             }
         }
         else
@@ -58,6 +127,6 @@ public class CanvasDialogueManager : MonoBehaviour
             Cursor.visible = false;
             dialoguePanel.SetActive(false);
         }
-        dialogueText.text = characterNpcName + ": " + currentDialogue[index];
+        dialogueText.text = currentNPC.characterName + ": " + currentDialogue[index];
     }
 }
