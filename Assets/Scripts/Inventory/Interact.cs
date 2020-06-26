@@ -36,6 +36,11 @@ public class Interact : MonoBehaviour
                 //and that hits info is tagged NPC
                 if (hitInfo.collider.CompareTag("NPC"))
                 {
+                    if (hitInfo.collider.GetComponent<QuestGiver>())
+                    {
+                        dlgMaster.currentQuest = hitInfo.collider.GetComponent<QuestGiver>();
+                    }
+
                     if (hitInfo.collider.GetComponent<NpcDialogueArray>())
                     {
                         NpcDialogueArray character = hitInfo.collider.GetComponent<NpcDialogueArray>();

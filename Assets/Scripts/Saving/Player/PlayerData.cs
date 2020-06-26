@@ -18,11 +18,11 @@ public class PlayerData
     {
         //Basic
         //playerName = player.canvasSet.characterName;//player.name;
-        level = player.level;
+        level = PlayerHandler.level;
         checkPoint = player.currentCheckPoint.name;
         currentExp = player.currentExp;
-        neededExp = player.neededExp;
-        maxExp = player.maxExp;
+        //neededExp = player.neededExp;
+        //maxExp = player.maxExp;
         //Position
         pX = player.transform.position.x;
         pY = player.transform.position.y;

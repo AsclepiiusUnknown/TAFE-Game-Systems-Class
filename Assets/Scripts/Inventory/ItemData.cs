@@ -228,7 +228,7 @@ public static class ItemData
                 _type = ItemType.Potions;
                 break;
             case 501:
-                _name = "Ring";
+                _name = "Mana";
                 _description = "";
                 _value = 140;
                 _amount = 1;

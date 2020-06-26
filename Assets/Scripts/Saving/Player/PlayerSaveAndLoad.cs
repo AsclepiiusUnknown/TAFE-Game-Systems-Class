@@ -24,10 +24,10 @@ public class PlayerSaveAndLoad : MonoBehaviour
     void FirstLoad()
     {
         player.name = "Adventurer";
-        player.level = 1;
+        PlayerHandler.level = 1;
         player.currentCheckPoint = GameObject.Find("First Check Point").GetComponent<Transform>();
 
-        player.maxExp = 60;
+        player.maxExp = 100;
 
         for (int i = 0; i < 3; i++)
         {
@@ -49,11 +49,11 @@ public class PlayerSaveAndLoad : MonoBehaviour
         //Do this when Binary is done
         PlayerData data = PlayerBinary.LoadPlayerData(player);
         player.name = data.playerName;
-        player.level = data.level;
+        PlayerHandler.level = data.level;
         player.currentCheckPoint = GameObject.Find(data.checkPoint).GetComponent<Transform>();
         player.currentExp = data.currentExp;
-        player.neededExp = data.neededExp;
-        player.maxExp = data.maxExp;
+        //player.neededExp = data.neededExp;
+        //player.maxExp = data.maxExp;
         for (int i = 0; i < player.characterStats.Length; i++)
         {
             player.characterStats[i].value = data.stats[i];

@@ -13,7 +13,7 @@ public class PlayerHandler : Character
     public Vector3 moveDirection;
 
     [Header("Level Data")]
-    public int level = 0;
+    public static int level = 0;
 
     [Header("Quests")]
     public float currentExp, neededExp, maxExp;
@@ -43,6 +43,8 @@ public class PlayerHandler : Character
     #region Behaviour
     void Start()
     {
+        level = 1;
+        print(level);
         controller = this.gameObject.GetComponent<CharacterController>();
     }
     public void Movement()
@@ -92,6 +94,15 @@ public class PlayerHandler : Character
     }
     public void Update()
     {
+        #region Leveling Up
+        if (currentExp >= neededExp)
+        {
+            level++;
+            currentExp -= neededExp;
+            print("LEVELED UP TO LEVEL: " + level);
+        }
+        #endregion
+
         Movement();
         #region Bar Update
 
