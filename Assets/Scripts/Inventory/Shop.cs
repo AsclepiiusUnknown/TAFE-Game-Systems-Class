@@ -65,6 +65,16 @@ public class Shop : MonoBehaviour
         RefreshShop();
     }
 
+    public void ExitShop()
+    {
+        shopContainer.SetActive(false);
+
+        LinearInventory.currentShop = null;
+        //playerInv.ToggleInv();
+
+        showShopInv = false;
+    }
+
     public void BuyItem()
     {
         LinearInventory.money -= itemPrice;

@@ -62,7 +62,7 @@ public class CanvasDialogueManager : MonoBehaviour
         {
             currentDialogue = currentNPC.posDlgText;
         }
-        if (currentNPC.approval <= 2)
+        if (currentNPC.approval >= 2)
         {
             currentDialogue = currentNPC.extraPosDlgText;
         }

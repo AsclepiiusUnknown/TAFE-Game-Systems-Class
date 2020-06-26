@@ -24,14 +24,14 @@ namespace Player
             {
                 GetComponent<Rigidbody>().freezeRotation = false;
             }
-            if(GetComponent<Camera>())
+            if (GetComponent<Camera>())
             {
                 axis = RotationalAxis.MouseY;
             }
         }
         void Update()
         {
-            if(!PlayerHandler.isDead)
+            if (!PlayerHandler.isDead)
             {
                 if (axis == RotationalAxis.MouseX)
                 {
@@ -43,7 +43,7 @@ namespace Player
                     _rotY = Mathf.Clamp(_rotY, minY, maxY);
                     transform.localEulerAngles = new Vector3(-_rotY, 0, 0);
                 }
-            }           
+            }
         }
     }
 

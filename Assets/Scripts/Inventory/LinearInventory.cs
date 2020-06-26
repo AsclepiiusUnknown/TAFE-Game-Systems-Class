@@ -126,7 +126,14 @@ public class LinearInventory : MonoBehaviour
 
     public void ToggleInv()
     {
-        showInv = !showInv;
+        if (currentShop != null)
+        {
+            showInv = true;
+        }
+        else
+        {
+            showInv = !showInv;
+        }
 
         #region Show/Hide Inventory Items
         if (showInv)
