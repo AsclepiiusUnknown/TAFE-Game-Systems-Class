@@ -33,6 +33,8 @@ public class QuestManager : MonoBehaviour
 
     public void OpenQuestWindow()
     {
+        currentQuest = currentQuestGiver.quest;
+
         //Enable the window so we can see it
         questWindow.SetActive(true);
 

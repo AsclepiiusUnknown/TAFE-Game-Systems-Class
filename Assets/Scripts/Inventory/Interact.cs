@@ -33,7 +33,7 @@ public class Interact : MonoBehaviour
 
             if (Physics.Raycast(interact, out hitInfo, 10))
             {
-                #region NPC 
+                #region NPCs 
                 //and that hits info is tagged NPC
                 if (hitInfo.collider.CompareTag("NPC"))
                 {
@@ -95,6 +95,7 @@ public class Interact : MonoBehaviour
                 }
                 #endregion
 
+                #region Items
                 if (hitInfo.collider.CompareTag("Item"))
                 {
                     Debug.Log("Pick Up Item");
@@ -105,7 +106,9 @@ public class Interact : MonoBehaviour
                         handler.OnCollection(); //adds item to inventory
                     }
                 }
+                #endregion
 
+                #region Chests
                 if (hitInfo.collider.CompareTag("Chest"))
                 {
                     Chest chest = hitInfo.transform.GetComponent<Chest>();
@@ -121,6 +124,7 @@ public class Interact : MonoBehaviour
                         }
                     }
                 }
+                #endregion
             }
         }
     }

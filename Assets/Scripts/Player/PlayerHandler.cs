@@ -43,8 +43,9 @@ public class PlayerHandler : Character
     #region Behaviour
     void Start()
     {
-        // level = 1;
-        // print(level);
+        level = 1;
+        currentExp = 0;
+        print(level);
         controller = this.gameObject.GetComponent<CharacterController>();
     }
     public void Movement()
