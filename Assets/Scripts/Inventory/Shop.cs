@@ -70,7 +70,10 @@ public class Shop : MonoBehaviour
         shopContainer.SetActive(false);
 
         LinearInventory.currentShop = null;
-        //playerInv.ToggleInv();
+        playerInv.ToggleInv();
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
         showShopInv = false;
     }

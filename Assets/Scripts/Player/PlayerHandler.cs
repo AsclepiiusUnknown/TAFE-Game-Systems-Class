@@ -17,7 +17,7 @@ public class PlayerHandler : Character
 
     [Header("Quests")]
     public float currentExp, neededExp, maxExp;
-    public Quest quest; //Make this a list to have more quests
+    public static Quest quest; //Make this a list to have more quests
 
     [Header("Damage Flash and Death")]
     public Image damageImage;
@@ -43,8 +43,8 @@ public class PlayerHandler : Character
     #region Behaviour
     void Start()
     {
-        level = 1;
-        print(level);
+        // level = 1;
+        // print(level);
         controller = this.gameObject.GetComponent<CharacterController>();
     }
     public void Movement()

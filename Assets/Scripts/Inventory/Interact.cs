@@ -11,6 +11,7 @@ public class Interact : MonoBehaviour
     public GameObject mainCamera;
     public CanvasDialogueManager dlgMaster;
     public LinearInventory playerInv;
+    public QuestManager questManager;
     #endregion
 
     #region Start
@@ -39,6 +40,8 @@ public class Interact : MonoBehaviour
                     if (hitInfo.collider.GetComponent<QuestGiver>())
                     {
                         dlgMaster.currentQuest = hitInfo.collider.GetComponent<QuestGiver>();
+                        questManager.currentQuestGiver = hitInfo.collider.GetComponent<QuestGiver>();
+                        print(questManager.currentQuestGiver);
                     }
 
                     if (hitInfo.collider.GetComponent<NpcDialogueArray>())
@@ -98,7 +101,7 @@ public class Interact : MonoBehaviour
                     ItemHandler handler = hitInfo.transform.GetComponent<ItemHandler>();
                     if (handler != null)
                     {
-                        player.quest.goal.ItemCollected(handler.itemId); //adds count to quest
+                        PlayerHandler.quest.goal.ItemCollected(handler.itemId); //adds count to quest
                         handler.OnCollection(); //adds item to inventory
                     }
                 }

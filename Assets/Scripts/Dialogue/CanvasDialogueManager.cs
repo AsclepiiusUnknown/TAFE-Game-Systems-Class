@@ -80,7 +80,7 @@ public class CanvasDialogueManager : MonoBehaviour
         dialogueText.text = currentNPC.characterName + " : " + currentDialogue[index];
         //buttonText.text = "Next";
 
-        if ((currentQuest.quest.goal.questState == QuestState.Completed || currentQuest.quest.goal.questState == QuestState.Available) && currentQuest.requiredLevel <= PlayerHandler.level)
+        if ((currentQuest.quest.goal.questState == QuestState.Completed || currentQuest.quest.goal.questState == QuestState.Available) && currentQuest.quest.requiredLevel <= PlayerHandler.level)
         {
             questBtn.gameObject.SetActive(true);
         }
